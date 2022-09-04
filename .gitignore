@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+/.idea/.gitignore
+/.idea/checkstyle-idea.xml
+/.idea/compiler.xml
+/kiji/src/androidTest/java/dev/kiji/ExampleInstrumentedTest.kt
+/kiji/src/test/java/dev/kiji/ExampleUnitTest.kt
+/.idea/gradle.xml
+/.idea/misc.xml
+/.idea/vcs.xml
