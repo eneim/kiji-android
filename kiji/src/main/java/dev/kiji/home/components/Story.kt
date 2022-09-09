@@ -60,10 +60,13 @@ fun Story(
                 )
             }
             val footer = buildAnnotatedString {
-                withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                    append(story.author.handle)
+                val user = story.author?.handle
+                if (!user.isNullOrBlank()) {
+                    withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                        append("$user・")
+                    }
                 }
-                append("・$creation")
+                append(creation)
             }
             StoryCellData(
                 title = AnnotatedString(story.title),

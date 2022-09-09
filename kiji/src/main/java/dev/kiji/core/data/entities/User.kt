@@ -26,4 +26,5 @@ data class User(
     val image: Image? = null,
     val created: Long,
     val updated: Long = created,
+    val service: Service,
 )

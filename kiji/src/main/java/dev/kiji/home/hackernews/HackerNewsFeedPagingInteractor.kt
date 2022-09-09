@@ -19,22 +19,16 @@ package dev.kiji.home.hackernews
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.map
-import dev.kiji.core.data.entities.Service
 import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.entities.User
 import dev.kiji.core.data.getResult
 import dev.kiji.core.data.hackernews.HackerNewsApi
 import dev.kiji.core.data.hackernews.HackerNewsStoryPagingSource
-import dev.kiji.core.data.hackernews.entities.HackerNewsItem
 import dev.kiji.core.domain.PagingDataInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class HackerNewsFeedPagingInteractor(
     private val api: HackerNewsApi,
-    private val mapper: suspend (HackerNewsItem) -> Story = MAPPER,
 ) : PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>() {
 
     override suspend fun createObservable(params: Params): Flow<PagingData<Story>> {
@@ -61,37 +55,10 @@ class HackerNewsFeedPagingInteractor(
             },
         )
             .flow
-            .map { paging -> paging.map(mapper) }
     }
 
     data class Params(
         override val pagingConfig: PagingConfig,
         val type: HackerNewsFeedType
     ) : Parameters<Story>
-
-    companion object {
-        private val MAPPER: suspend (HackerNewsItem) -> Story = { item ->
-            val linkToService = "https://news.ycombinator.com/item?id=${item.id}"
-            val linkToOriginal = item.url.orEmpty()
-            val userUrl = "https://news.ycombinator.com/user?id=${requireNotNull(item.author)}"
-            Story(
-                iid = linkToService,
-                url = linkToService,
-                link = linkToOriginal,
-                title = item.title.orEmpty(),
-                images = emptyList(),
-                created = checkNotNull(item.createdTimestampMillis),
-                updated = checkNotNull(item.createdTimestampMillis),
-                author = User(
-                    iid = "$userUrl::${Service.HackerNews.host}",
-                    handle = requireNotNull(item.author),
-                    url = userUrl,
-                    image = null,
-                    created = 0L,
-                    updated = 0L,
-                ),
-                service = Service.HackerNews
-            )
-        }
-    }
 }

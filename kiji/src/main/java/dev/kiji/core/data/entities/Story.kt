@@ -21,19 +21,21 @@ import com.squareup.moshi.JsonClass
 
 /**
  * @property iid Internal ID.
+ * @property oid Original ID.
  * @property url The URL to the service's site.
  * @property link The URL to the original article. Default to [url].
  */
 @JsonClass(generateAdapter = true)
 data class Story(
     val iid: String,
+    val oid: String,
     val url: String,
     val link: String = url,
     val title: String,
     val images: List<Image> = emptyList(),
     val created: Long,
     val updated: Long = created,
-    val author: User,
+    val author: User?,
     val service: Service,
 ) {
 
