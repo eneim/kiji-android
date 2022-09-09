@@ -16,7 +16,7 @@
 
 buildscript {
     val compose_compiler_version: String by extra("1.3.0")
-    val compose_version: String by extra("1.3.0-beta01")
+    val compose_version: String by extra("1.3.0-beta02")
 }
 
 plugins {
