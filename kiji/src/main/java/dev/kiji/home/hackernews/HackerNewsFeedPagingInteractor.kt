@@ -20,7 +20,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.getResult
+import dev.kiji.core.data.asResult
 import dev.kiji.core.data.hackernews.HackerNewsApi
 import dev.kiji.core.data.hackernews.HackerNewsStoryPagingSource
 import dev.kiji.core.domain.PagingDataInteractor
@@ -41,7 +41,7 @@ class HackerNewsFeedPagingInteractor(
             HackerNewsFeedType.ShowStories -> api.getShowStories()
         }
 
-        val ids: List<Long> = response.getResult().getOrThrow()
+        val ids: List<Long> = response.asResult().getOrThrow()
 
         return Pager(
             config = params.pagingConfig,

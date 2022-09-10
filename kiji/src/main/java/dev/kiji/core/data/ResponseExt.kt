@@ -19,7 +19,7 @@ package dev.kiji.core.data
 import retrofit2.Response
 import java.io.IOException
 
-inline fun <reified T : Any?> Response<T>.getResult(): Result<T> = if (isSuccessful) {
+inline fun <reified T : Any?> Response<T>.asResult(): Result<T> = if (isSuccessful) {
     Result.success(body() as T)
 } else {
     Result.failure(IOException(errorBody()?.string()))

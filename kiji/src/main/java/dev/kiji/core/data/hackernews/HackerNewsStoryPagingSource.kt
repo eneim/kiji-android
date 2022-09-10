@@ -21,7 +21,7 @@ import androidx.paging.PagingState
 import dev.kiji.core.data.entities.Service
 import dev.kiji.core.data.entities.Story
 import dev.kiji.core.data.entities.User
-import dev.kiji.core.data.getResult
+import dev.kiji.core.data.asResult
 import dev.kiji.core.data.hackernews.entities.HackerNewsItem
 import kotlinx.coroutines.*
 
@@ -55,7 +55,7 @@ internal class HackerNewsStoryPagingSource(
             .subList(loadFromIndex, loadToIndex)
             .map { itemId ->
                 async {
-                    val item = api.getItem(itemId).getResult().getOrThrow()
+                    val item = api.getItem(itemId).asResult().getOrThrow()
                     mapStory(item)
                 }
             }
@@ -75,7 +75,7 @@ internal class HackerNewsStoryPagingSource(
 
     private suspend fun mapStory(item: HackerNewsItem): Story {
         val user = if (item.author != null) {
-            api.getUser(item.author).getResult().getOrNull()?.let {
+            api.getUser(item.author).asResult().getOrNull()?.let {
                 val userUrl = "https://news.ycombinator.com/user?id=${it.id}"
                 User(
                     iid = userUrl,
