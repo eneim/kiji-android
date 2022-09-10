@@ -83,6 +83,7 @@ class MainActivity : ComponentActivity() {
                     .build()
                     .create(HackerNewsApi::class.java)
 
+                @Suppress("UNCHECKED_CAST")
                 return HackerViewsViewModel(
                     stateHandle = handle,
                     feedInteractor = HackerNewsFeedPagingInteractor(api = api)
