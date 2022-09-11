@@ -17,6 +17,7 @@
 package dev.kiji.home.components
 
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -25,17 +26,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
+import dev.kiji.R
 import dev.kiji.core.data.entities.Story
 import dev.kiji.core.model.Action
 
@@ -92,13 +97,18 @@ fun Story(
         ) {
             Text(
                 text = data.header,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    ),
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.placeholder(
-                    visible = story == null,
-                    highlight = PlaceholderHighlight.shimmer(),
-                )
+                modifier = Modifier
+                    .placeholder(
+                        visible = story == null,
+                        highlight = PlaceholderHighlight.shimmer(),
+                    )
             )
 
             Text(
@@ -114,16 +124,46 @@ fun Story(
             )
 
             if (data.footer.isNotBlank()) {
-                Text(
-                    text = data.footer,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.placeholder(
-                        visible = story == null,
-                        highlight = PlaceholderHighlight.shimmer(),
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val iconUrl = story?.faviconUrl
+                    if (iconUrl != null) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(iconUrl)
+                                .crossfade(true)
+                                .listener(onError = { _, error ->
+                                    Log.w("Kiji_Coil", "Error: ${error.throwable}, URL: $iconUrl")
+                                })
+                                .build(),
+                            placeholder = painterResource(id = R.drawable.placeholder),
+                            error = painterResource(id = R.drawable.placeholder),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .size(20.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
+
+                    Text(
+                        text = data.footer,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            platformStyle = PlatformTextStyle(
+                                includeFontPadding = false
+                            ),
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(weight = 1f, fill = false)
+                            .wrapContentHeight()
+                            .placeholder(
+                                visible = story == null,
+                                highlight = PlaceholderHighlight.shimmer(),
+                            )
                     )
-                )
+                }
             }
         }
     }

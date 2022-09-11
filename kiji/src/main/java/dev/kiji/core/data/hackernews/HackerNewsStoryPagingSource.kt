@@ -23,6 +23,7 @@ import dev.kiji.core.data.entities.Story
 import dev.kiji.core.data.entities.User
 import dev.kiji.core.data.asResult
 import dev.kiji.core.data.hackernews.entities.HackerNewsItem
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.*
 
 internal class HackerNewsStoryPagingSource(
@@ -68,7 +69,7 @@ internal class HackerNewsStoryPagingSource(
                 nextKey = nextPageKey
             )
         } catch (ignored: Throwable) {
-            ignored.printStackTrace()
+            Napier.w("PagingSource failed.", ignored)
             LoadResult.Error(ignored)
         }
     }

@@ -17,5 +17,24 @@
 package dev.kiji
 
 import android.app.Application
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.decode.SvgDecoder
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 
-class Kiji : Application()
+class Kiji : Application(), ImageLoaderFactory {
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .components {
+                add(SvgDecoder.Factory())
+            }
+            .build()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Napier.base(DebugAntilog())
+    }
+}

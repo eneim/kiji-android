@@ -39,5 +39,9 @@ data class Story(
     val service: Service,
 ) {
 
-    val website: String? = Uri.parse(link).host
+    val website: String? = Uri.parse(link)?.host
+
+    // https://icon.horse/icon/${url}
+    // https://api.faviconkit.com/{url}/{size}
+    val faviconUrl: String? = website?.let { "https://api.faviconkit.com/$it/256" }
 }
