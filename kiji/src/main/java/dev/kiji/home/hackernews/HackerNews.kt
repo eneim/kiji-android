@@ -19,6 +19,7 @@ package dev.kiji.home.hackernews
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import dev.kiji.core.data.entities.Story
@@ -29,10 +30,12 @@ import dev.kiji.home.components.Story
 fun HackerNews(
     data: LazyPagingItems<Story>,
     currentTimeMillis: Long,
+    modifier: Modifier = Modifier,
     onAction: (Action<Story>) -> Unit,
 ) {
     LazyColumn(
         userScrollEnabled = data.itemCount > 0,
+        modifier = modifier,
     ) {
         if (data.itemCount == 0) {
             items(100) {

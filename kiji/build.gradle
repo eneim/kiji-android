@@ -64,8 +64,11 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.2.0-alpha02")
     implementation("androidx.paging:paging-compose:1.0.0-alpha16")
 
+    def accompanist_version = "0.26.2-beta"
     // If you're using Material, use accompanist-placeholder-material
-    implementation "com.google.accompanist:accompanist-placeholder-material:0.26.2-beta"
+    implementation("com.google.accompanist:accompanist-placeholder-material:$accompanist_version")
+    implementation("com.google.accompanist:accompanist-insets:$accompanist_version")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
 
     def coil_version = "2.2.1"
     implementation("io.coil-kt:coil:$coil_version")

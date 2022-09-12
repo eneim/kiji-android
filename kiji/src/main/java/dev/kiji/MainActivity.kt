@@ -24,6 +24,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
@@ -98,7 +99,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(
             /* window = */ window,
-            /* decorFitsSystemWindows = */ true
+            /* decorFitsSystemWindows = */ false
         )
 
         setContent {
@@ -106,13 +107,15 @@ class MainActivity : ComponentActivity() {
             KijiTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     HackerNews(
                         data = rememberFlowWithLifecycle(flow = hackerViewsViewModel.feedData)
                             .collectAsLazyPagingItems(),
-                        currentTimeMillis = clockBroadcastReceiver.currentTimeMillis
+                        currentTimeMillis = clockBroadcastReceiver.currentTimeMillis,
                     ) {
                         Toast.makeText(context, "Clicked: ${it.data.iid}", Toast.LENGTH_SHORT)
                             .show()

@@ -17,7 +17,6 @@
 package dev.kiji.home.components
 
 import android.text.format.DateUtils
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +42,7 @@ import com.google.accompanist.placeholder.material.shimmer
 import dev.kiji.R
 import dev.kiji.core.data.entities.Story
 import dev.kiji.core.model.Action
+import io.github.aakira.napier.Napier
 
 @Composable
 fun Story(
@@ -97,10 +97,11 @@ fun Story(
         ) {
             Text(
                 text = data.header,
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = MaterialTheme.typography.labelMedium.copy(
                     platformStyle = PlatformTextStyle(
                         includeFontPadding = false
                     ),
+                    fontWeight = FontWeight.Normal
                 ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -113,7 +114,7 @@ fun Story(
 
             Text(
                 text = data.title,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -132,15 +133,14 @@ fun Story(
                                 .data(iconUrl)
                                 .crossfade(true)
                                 .listener(onError = { _, error ->
-                                    Log.w("Kiji_Coil", "Error: ${error.throwable}, URL: $iconUrl")
+                                    Napier.w("Error: ${error.throwable}, URL: $iconUrl")
                                 })
                                 .build(),
                             placeholder = painterResource(id = R.drawable.placeholder),
                             error = painterResource(id = R.drawable.placeholder),
                             contentDescription = null,
                             contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .size(20.dp)
+                            modifier = Modifier.size(16.dp)
                         )
 
                         Spacer(modifier = Modifier.width(4.dp))
@@ -148,10 +148,11 @@ fun Story(
 
                     Text(
                         text = data.footer,
-                        style = MaterialTheme.typography.bodyMedium.copy(
+                        style = MaterialTheme.typography.labelMedium.copy(
                             platformStyle = PlatformTextStyle(
                                 includeFontPadding = false
                             ),
+                            fontWeight = FontWeight.Normal
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
