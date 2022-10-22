@@ -27,7 +27,8 @@ import kotlinx.coroutines.flow.flatMapLatest
  * Copy from the tivi app.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-abstract class SubjectInteractor<PARAMS : Any, DATA> {
+abstract class SubjectInteractor<PARAMS : Any?, DATA> {
+
     // Ideally this would be buffer = 0, since we use flatMapLatest below, BUT invoke is not
     // suspending. This means that we can't suspend while flatMapLatest cancels any
     // existing flows. The buffer of 1 means that we can use tryEmit() and buffer the value
@@ -40,7 +41,7 @@ abstract class SubjectInteractor<PARAMS : Any, DATA> {
 
     val flow: Flow<DATA> = paramState
         .distinctUntilChanged()
-        .flatMapLatest { createObservable(it) }
+        .flatMapLatest(::createObservable)
         .distinctUntilChanged()
 
     operator fun invoke(params: PARAMS) {

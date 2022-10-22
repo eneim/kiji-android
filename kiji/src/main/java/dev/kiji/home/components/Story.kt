@@ -98,10 +98,8 @@ fun Story(
             Text(
                 text = data.header,
                 style = MaterialTheme.typography.labelMedium.copy(
-                    platformStyle = PlatformTextStyle(
-                        includeFontPadding = false
-                    ),
-                    fontWeight = FontWeight.Normal
+                    platformStyle = PlatformTextStyle(includeFontPadding = false),
+                    fontWeight = FontWeight.Normal,
                 ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

@@ -16,15 +16,27 @@
 
 package dev.kiji.core.data.entities
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
-data class User(
+data class SiteMeta internal constructor(
     val iid: String,
-    val handle: String,
+    val title: String,
+    val description: String?,
     val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
-)
+    val favicon: String?,
+    val image: Image?,
+) {
+
+    constructor(
+        title: String,
+        description: String?,
+        url: String,
+        favicon: String?,
+        image: Image?
+    ) : this(
+        iid = url,
+        title = title,
+        description = description,
+        url = url,
+        favicon = favicon,
+        image = image
+    )
+}

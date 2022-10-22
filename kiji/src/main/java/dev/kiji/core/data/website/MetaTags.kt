@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.data.entities
+package dev.kiji.core.data.website
 
-import androidx.compose.runtime.Immutable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-@Immutable
-data class User(
-    val iid: String,
-    val handle: String,
+@JsonClass(generateAdapter = true)
+data class MetaTags(
     val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
+    @Json(name = "og:site_name")
+    val siteName: String?,
+    val title: String,
+    val description: String?,
+    val favicon: String?,
+    @Json(name = "og:image")
+    val imageUrl: String?,
+    @Json(name = "og:image:width")
+    val imageWidth: String?,
+    @Json(name = "og:image:height")
+    val imageHeight: String?,
 )

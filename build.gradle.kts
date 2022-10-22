@@ -15,14 +15,17 @@
  */
 
 buildscript {
-    val compose_compiler_version: String by extra("1.3.0")
-    val compose_version: String by extra("1.3.0-beta02")
+    @Suppress("UNUSED_VARIABLE", "LocalVariableName")
+    val compose_compiler_version: String by extra("1.3.2")
+
+    @Suppress("UNUSED_VARIABLE", "LocalVariableName")
+    val compose_version: String by extra("1.3.0-rc01")
 }
 
 plugins {
-    id("com.android.application") version "7.3.0-rc01" apply false
-    id("com.android.library") version "7.3.0-rc01" apply false
-    id("org.jetbrains.kotlin.android") version "1.7.10" apply false
+    id("com.android.application") version "7.4.0-beta02" apply false
+    id("com.android.library") version "7.4.0-beta02" apply false
+    id("org.jetbrains.kotlin.android") version "1.7.20" apply false
 }
 
 tasks.register("clean", Delete::class) {
@@ -33,7 +36,7 @@ allprojects {
     afterEvaluate {
         if (hasProperty("android") && hasProperty("dependencies")) {
             dependencies {
-                "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:1.2.2")
+                "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:2.0.0")
             }
         }
     }
@@ -62,7 +65,31 @@ allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
         kotlinOptions {
             jvmTarget = "11"
-            freeCompilerArgs = freeCompilerArgs + arrayOf("-opt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs.plus(arrayOf("-opt-in=kotlin.RequiresOptIn"))
+        }
+    }
+}
+
+subprojects {
+    val metricsFolder = project.buildDir.absolutePath + "/compose-metrics"
+    val compilerPluginPrefix = "androidx.compose.compiler.plugins.kotlin"
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            if (project.findProperty("enableComposeCompilerReports") == "true") {
+                freeCompilerArgs
+                    .plus(
+                        listOf(
+                            "-P",
+                            "plugin:$compilerPluginPrefix:metricsDestination=$metricsFolder"
+                        )
+                    )
+                    .plus(
+                        listOf(
+                            "-P",
+                            "plugin:$compilerPluginPrefix:reportsDestination=$metricsFolder"
+                        )
+                    )
+            }
         }
     }
 }

@@ -16,9 +16,9 @@
 
 package dev.kiji.core.data.entities
 
-import com.squareup.moshi.JsonClass
+import androidx.compose.runtime.Immutable
 
-@JsonClass(generateAdapter = true)
+@Immutable
 data class Image(
     val url: String,
     val width: Int = -1,

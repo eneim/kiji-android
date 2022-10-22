@@ -24,11 +24,13 @@ import dev.kiji.core.data.entities.Story
 import dev.kiji.core.data.hackernews.HackerNewsApi
 import dev.kiji.core.data.hackernews.HackerNewsStoryPagingSource
 import dev.kiji.core.domain.PagingDataInteractor
+import dev.kiji.core.domain.ResultInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 class HackerNewsFeedPagingInteractor(
     private val api: HackerNewsApi,
+    private val storyFetcher: ResultInteractor<Long, Story?>,
 ) : PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>() {
 
     override suspend fun createObservable(params: Params): Flow<PagingData<Story>> {
@@ -48,8 +50,8 @@ class HackerNewsFeedPagingInteractor(
             initialKey = null,
             pagingSourceFactory = {
                 HackerNewsStoryPagingSource(
-                    api = api,
                     ids = ids,
+                    storyFetcher = storyFetcher,
                     dispatcher = Dispatchers.IO
                 )
             },

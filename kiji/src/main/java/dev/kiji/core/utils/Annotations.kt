@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.data.entities
+package dev.kiji.core.utils
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
-data class User(
-    val iid: String,
-    val handle: String,
-    val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
-)
+/**
+ * Annotates a Retrofit API interface with this for automatic API service creation.
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+annotation class Endpoint(val value: String)

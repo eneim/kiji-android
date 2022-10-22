@@ -16,6 +16,9 @@
 
 package dev.kiji.core.data.entities
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 sealed interface Service {
 
     val host: String

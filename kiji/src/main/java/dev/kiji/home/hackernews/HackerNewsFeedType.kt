@@ -19,23 +19,36 @@ package dev.kiji.home.hackernews
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-sealed interface HackerNewsFeedType : Parcelable {
+sealed class HackerNewsFeedType(val name: String) : Parcelable {
 
     @Parcelize
-    object TopStories : HackerNewsFeedType
+    object TopStories : HackerNewsFeedType("TopStories")
 
     @Parcelize
-    object NewStories : HackerNewsFeedType
+    object NewStories : HackerNewsFeedType("NewStories")
 
     @Parcelize
-    object BestStories : HackerNewsFeedType
+    object BestStories : HackerNewsFeedType("BestStories")
 
     @Parcelize
-    object AskStories : HackerNewsFeedType
+    object AskStories : HackerNewsFeedType("AskStories")
 
     @Parcelize
-    object ShowStories : HackerNewsFeedType
+    object ShowStories : HackerNewsFeedType("ShowStories")
 
     @Parcelize
-    object JobStories : HackerNewsFeedType
+    object JobStories : HackerNewsFeedType("JobStories")
+
+    companion object {
+
+        fun fromName(name: String): HackerNewsFeedType? = when (name) {
+            TopStories.name -> TopStories
+            NewStories.name -> NewStories
+            BestStories.name -> BestStories
+            AskStories.name -> AskStories
+            ShowStories.name -> ShowStories
+            JobStories.name -> JobStories
+            else -> null
+        }
+    }
 }

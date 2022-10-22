@@ -14,30 +14,38 @@
  * limitations under the License.
  */
 
-package dev.kiji.home.hackernews
+package dev.kiji.home.qiita
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.items
 import dev.kiji.core.data.entities.Story
 import dev.kiji.core.model.Action
 import dev.kiji.home.components.Story
 
 @Composable
-fun HackerNews(
-    data: LazyPagingItems<Story>,
+fun QiitaFeed(
+    data: SnapshotStateList<Story>,
     currentTimeMillis: Long,
     modifier: Modifier = Modifier,
     onAction: (Action<Story>) -> Unit,
 ) {
+    val listState = rememberLazyListState()
+
     LazyColumn(
-        userScrollEnabled = data.itemCount > 0,
+        state = listState,
+        userScrollEnabled = data.isNotEmpty(),
         modifier = modifier,
+        contentPadding = WindowInsets.systemBars.asPaddingValues(),
     ) {
-        if (data.itemCount == 0) {
+        if (data.isEmpty()) {
             items(100) {
                 Story(
                     story = null,
@@ -48,9 +56,9 @@ fun HackerNews(
                 Divider()
             }
         } else {
-            items(data) { item: Story? ->
+            items(data) {
                 Story(
-                    story = item,
+                    story = it,
                     currentTimeMillis = currentTimeMillis,
                     onAction = onAction,
                 )

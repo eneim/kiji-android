@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.data.entities
+package dev.kiji.core.data.website
 
-import androidx.compose.runtime.Immutable
+import dev.kiji.core.utils.Endpoint
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.Query
 
-@Immutable
-data class User(
-    val iid: String,
-    val handle: String,
-    val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
-)
+@Endpoint("https://metatags.io")
+interface MetaTagsApi {
+
+    @Headers("referer: https://metatags.io/")
+    @GET("/api/metadata")
+    suspend fun getMetaTags(@Query("domain") url: String): Response<MetaTags>
+}

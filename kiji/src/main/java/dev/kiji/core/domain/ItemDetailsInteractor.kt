@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.data.entities
+package dev.kiji.core.domain
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
-data class User(
-    val iid: String,
-    val handle: String,
-    val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
-)
+/**
+ * Copy from the tivi app.
+ */
+abstract class ItemDetailsInteractor<P : Any?, T : Any?> : SubjectInteractor<P, T>()

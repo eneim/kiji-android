@@ -17,7 +17,7 @@
 package dev.kiji.core.data.entities
 
 import android.net.Uri
-import com.squareup.moshi.JsonClass
+import androidx.compose.runtime.Immutable
 
 /**
  * @property iid Internal ID.
@@ -25,13 +25,14 @@ import com.squareup.moshi.JsonClass
  * @property url The URL to the service's site.
  * @property link The URL to the original article. Default to [url].
  */
-@JsonClass(generateAdapter = true)
+@Immutable
 data class Story(
     val iid: String,
     val oid: String,
     val url: String,
     val link: String = url,
     val title: String,
+    val content: String?,
     val images: List<Image> = emptyList(),
     val created: Long,
     val updated: Long = created,

@@ -18,17 +18,14 @@ package dev.kiji.core.data.hackernews
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import dev.kiji.core.data.entities.Service
 import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.entities.User
-import dev.kiji.core.data.asResult
-import dev.kiji.core.data.hackernews.entities.HackerNewsItem
+import dev.kiji.core.domain.ResultInteractor
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.*
 
 internal class HackerNewsStoryPagingSource(
-    private val api: HackerNewsApi,
     private val ids: List<Long>,
+    private val storyFetcher: ResultInteractor<Long, Story?>,
     private val dispatcher: CoroutineDispatcher,
 ) : PagingSource<Int, Story>() {
 
@@ -52,17 +49,16 @@ internal class HackerNewsStoryPagingSource(
             .coerceAtLeast(0)
             .takeIf { key -> key != loadFromIndex }
 
-        val asyncData: List<Deferred<Story>> = ids
+        val asyncData: List<Deferred<Story?>> = ids
             .subList(loadFromIndex, loadToIndex)
             .map { itemId ->
                 async {
-                    val item = api.getItem(itemId).asResult().getOrThrow()
-                    mapStory(item)
+                    storyFetcher.executeSync(itemId)
                 }
             }
 
         return@withContext try {
-            val data = asyncData.awaitAll()
+            val data = asyncData.awaitAll().filterNotNull()
             LoadResult.Page(
                 data = data,
                 prevKey = prevPageKey,
@@ -72,39 +68,6 @@ internal class HackerNewsStoryPagingSource(
             Napier.w("PagingSource failed.", ignored)
             LoadResult.Error(ignored)
         }
-    }
-
-    private suspend fun mapStory(item: HackerNewsItem): Story {
-        val user = if (item.author != null) {
-            api.getUser(item.author).asResult().getOrNull()?.let {
-                val userUrl = "https://news.ycombinator.com/user?id=${it.id}"
-                User(
-                    iid = userUrl,
-                    handle = it.id,
-                    url = userUrl,
-                    image = null,
-                    created = it.createdTimestampMillis,
-                    service = Service.HackerNews,
-                )
-            }
-        } else {
-            null
-        }
-
-        val linkToService = "https://news.ycombinator.com/item?id=${item.id}"
-        val linkToOriginal = item.url.orEmpty()
-        return Story(
-            iid = linkToService,
-            oid = item.id.toString(),
-            url = linkToService,
-            link = linkToOriginal,
-            title = item.title.orEmpty(),
-            images = emptyList(),
-            created = checkNotNull(item.createdTimestampMillis),
-            updated = checkNotNull(item.createdTimestampMillis),
-            author = user,
-            service = Service.HackerNews
-        )
     }
 
     private companion object {

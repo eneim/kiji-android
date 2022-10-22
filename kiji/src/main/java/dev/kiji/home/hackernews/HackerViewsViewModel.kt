@@ -22,34 +22,49 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import dev.kiji.core.data.entities.SiteMeta
 import dev.kiji.core.data.entities.Story
+import dev.kiji.core.domain.ItemDetailsInteractor
 import dev.kiji.core.domain.PagingDataInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HackerViewsViewModel(
     private val stateHandle: SavedStateHandle, // TODO: use DataStore for persistent cache.
     private val feedInteractor: PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>,
+    private val itemInteractor: ItemDetailsInteractor<Long?, Pair<Story, SiteMeta?>?>,
 ) : ViewModel() {
 
     private val feedType: StateFlow<HackerNewsFeedType> = stateHandle
         .getStateFlow(KEY_FEED_TYPE, HackerNewsFeedType.TopStories)
 
+    private val storyId: StateFlow<String?> = stateHandle
+        .getStateFlow(KEY_CURRENT_STORY_ID, null)
+
     val feedData: Flow<PagingData<Story>> = feedInteractor.flow.cachedIn(viewModelScope)
 
-    init {
-        feedInteractor(HackerNewsFeedPagingInteractor.Params(PAGING_CONFIG, feedType.value))
+    val currentStory: StateFlow<Pair<Story, SiteMeta?>?> = itemInteractor.flow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null
+        )
 
+    init {
         viewModelScope.launch(Dispatchers.IO) {
             feedType
                 .mapLatest { HackerNewsFeedPagingInteractor.Params(PAGING_CONFIG, it) }
                 .collectLatest { params -> feedInteractor(params) }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            storyId.collectLatest { id ->
+                val itemId: Long? = id?.toLong()
+                itemInteractor(itemId)
+            }
         }
     }
 
@@ -57,8 +72,15 @@ class HackerViewsViewModel(
         stateHandle[KEY_FEED_TYPE] = type
     }
 
+    fun setCurrentStory(story: Story? = null) = if (story != null) {
+        stateHandle[KEY_CURRENT_STORY_ID] = story.oid
+    } else {
+        stateHandle[KEY_CURRENT_STORY_ID] = null
+    }
+
     companion object {
         private const val KEY_FEED_TYPE = "HackerNewsFeedType"
+        private const val KEY_CURRENT_STORY_ID = "HackerNewsStoryId"
         private val PAGING_CONFIG = PagingConfig(
             pageSize = 20,
         )

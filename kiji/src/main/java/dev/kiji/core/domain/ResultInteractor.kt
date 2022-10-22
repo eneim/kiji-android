@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.data.entities
+package dev.kiji.core.domain
 
-import androidx.compose.runtime.Immutable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-@Immutable
-data class User(
-    val iid: String,
-    val handle: String,
-    val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
-)
+abstract class ResultInteractor<in P, R> {
+    operator fun invoke(params: P): Flow<R> = flow {
+        emit(doWork(params))
+    }
+
+    suspend fun executeSync(params: P): R = doWork(params)
+
+    protected abstract suspend fun doWork(params: P): R
+}

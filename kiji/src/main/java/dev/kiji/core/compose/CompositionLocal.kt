@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.data.entities
+package dev.kiji.core.compose
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.neverEqualPolicy
 
-@Immutable
-data class User(
-    val iid: String,
-    val handle: String,
-    val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
-)
+val LocalCurrentMinute = compositionLocalOf<Long>(
+    neverEqualPolicy()
+) {
+    error("CompositionLocal LocalTimestamp not present")
+}

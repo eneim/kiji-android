@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.data.entities
+package dev.kiji.core.utils
 
-import androidx.compose.runtime.Immutable
+import retrofit2.Retrofit
 
-@Immutable
-data class User(
-    val iid: String,
-    val handle: String,
-    val url: String,
-    val image: Image? = null,
-    val created: Long,
-    val updated: Long = created,
-    val service: Service,
-)
+inline fun <reified T : Any> Retrofit.Builder.create(): T {
+    val endpoint = T::class.java.annotations
+        .filterIsInstance<Endpoint>()
+        .first()
+        .value
+    return this.baseUrl(endpoint).build()
+        .create(T::class.java)
+}
