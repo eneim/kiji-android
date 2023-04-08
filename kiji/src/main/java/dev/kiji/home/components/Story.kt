@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import dev.kiji.R
-import dev.kiji.core.data.entities.Story
 import dev.kiji.core.model.Action
+import dev.kiji.data.entities.Story
 import io.github.aakira.napier.Napier
 
 @Composable
@@ -68,11 +68,11 @@ fun Story(
             val creation = buildAnnotatedString {
                 append(
                     DateUtils.getRelativeTimeSpanString(
-                        story.created,
+                        story.createdMillis,
                         currentTimeMillis,
                         DateUtils.MINUTE_IN_MILLIS,
                         DateUtils.FORMAT_ABBREV_RELATIVE,
-                    ).toString()
+                    )
                 )
             }
             val footer = buildAnnotatedString {

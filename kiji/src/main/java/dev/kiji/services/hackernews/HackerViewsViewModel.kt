@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,34 @@
 
 package dev.kiji.services.hackernews
 
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import dev.kiji.core.data.entities.SiteMeta
-import dev.kiji.core.data.entities.Story
 import dev.kiji.core.domain.ItemDetailsInteractor
 import dev.kiji.core.domain.PagingDataInteractor
+import dev.kiji.data.HackerNewsDataModule
+import dev.kiji.data.common.CommonDataModule
+import dev.kiji.data.entities.SiteMeta
+import dev.kiji.data.entities.Story
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class HackerViewsViewModel(
+@ExperimentalCoroutinesApi
+internal class HackerViewsViewModel(
     private val stateHandle: SavedStateHandle,
     private val feedInteractor: PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>,
     private val itemInteractor: ItemDetailsInteractor<Long?, Pair<Story, SiteMeta?>?>,
@@ -57,14 +68,14 @@ class HackerViewsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             feedType
                 .mapLatest { HackerNewsFeedPagingInteractor.Params(PAGING_CONFIG, it) }
-                .collectLatest { params -> feedInteractor(params) }
+                .onEach { params -> feedInteractor(params) }
+                .collect()
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            storyId.collectLatest { id ->
-                val itemId: Long? = id?.toLong()
-                itemInteractor(itemId)
-            }
+            storyId
+                .onEach { id -> itemInteractor(id?.toLong()) }
+                .collect()
         }
     }
 
@@ -84,5 +95,32 @@ class HackerViewsViewModel(
         private val PAGING_CONFIG = PagingConfig(
             pageSize = 20,
         )
+
+        fun getInstance(
+            activity: ComponentActivity,
+        ): Lazy<HackerViewsViewModel> = activity.viewModels {
+            object : AbstractSavedStateViewModelFactory() {
+                override fun <T : ViewModel> create(
+                    key: String, modelClass: Class<T>, handle: SavedStateHandle,
+                ): T {
+                    val hackerNewsApi = HackerNewsDataModule.provideHackerNewsApi()
+                    val metaTagsApi = CommonDataModule.provideMetaTagsApi()
+                    val storyFetcher = provideHackerNewsStoryFetcher(hackerNewsApi)
+
+                    @Suppress("UNCHECKED_CAST")
+                    return HackerViewsViewModel(
+                        stateHandle = handle,
+                        feedInteractor = HackerNewsFeedPagingInteractor(
+                            api = hackerNewsApi,
+                            fetcher = storyFetcher,
+                        ),
+                        itemInteractor = HackerNewsItemDetailsInteractor(
+                            api = metaTagsApi,
+                            storyFetcher = storyFetcher,
+                        ),
+                    ) as T
+                }
+            }
+        }
     }
 }

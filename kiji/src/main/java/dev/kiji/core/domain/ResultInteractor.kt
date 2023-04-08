@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ package dev.kiji.core.domain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/**
+ * Source: https://github.com/chrisbanes/tivi
+ */
 abstract class ResultInteractor<in P, R> {
     operator fun invoke(params: P): Flow<R> = flow {
         emit(doWork(params))

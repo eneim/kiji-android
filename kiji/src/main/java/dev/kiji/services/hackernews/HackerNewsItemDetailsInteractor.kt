@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,21 @@
 
 package dev.kiji.services.hackernews
 
-import dev.kiji.core.data.asResult
-import dev.kiji.core.data.entities.Image
-import dev.kiji.core.data.entities.SiteMeta
-import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.website.MetaTagsApi
 import dev.kiji.core.domain.ItemDetailsInteractor
 import dev.kiji.core.domain.ResultInteractor
+import dev.kiji.data.common.MetaTagsApi
+import dev.kiji.data.entities.Image
+import dev.kiji.data.entities.SiteMeta
+import dev.kiji.data.entities.Story
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
-class HackerNewsItemDetailsInteractor(
+@ExperimentalCoroutinesApi
+internal class HackerNewsItemDetailsInteractor(
     private val api: MetaTagsApi,
     private val storyFetcher: ResultInteractor<Long, Story?>,
 ) : ItemDetailsInteractor<Long?, Pair<Story, SiteMeta?>?>() {
@@ -34,26 +38,37 @@ class HackerNewsItemDetailsInteractor(
     override suspend fun createObservable(params: Long?): Flow<Pair<Story, SiteMeta?>?> {
         if (params == null) return flowOf(null)
         val story: Story = storyFetcher.executeSync(params) ?: return flowOf(null)
+        val meta = withTimeoutOrNull(500.toDuration(DurationUnit.MILLISECONDS)) {
+            api.getMetaTags(url = story.link)
+        }
 
-        val meta = api.getMetaTags(url = story.link).asResult().getOrNull()
-        val siteMeta = if (meta != null) {
+        val siteMeta = meta?.let {
+                (
+                    url,
+                    siteName,
+                    title,
+                    description,
+                    favicon,
+                    imageUrl,
+                    imageWidth,
+                    imageHeight,
+                ),
+            ->
             SiteMeta(
-                title = meta.title,
-                description = meta.description,
-                url = meta.url,
-                favicon = meta.favicon ?: story.faviconUrl,
-                image = if (meta.imageUrl != null && meta.imageWidth != null && meta.imageHeight != null) {
+                title = title,
+                description = description,
+                url = url,
+                favicon = favicon ?: story.faviconUrl,
+                image = if (imageUrl != null && imageWidth != null && imageHeight != null) {
                     Image(
-                        url = meta.imageUrl,
-                        width = meta.imageWidth.toInt(),
-                        height = meta.imageHeight.toInt()
+                        url = imageUrl,
+                        width = imageWidth.toInt(),
+                        height = imageHeight.toInt()
                     )
                 } else {
                     null
                 }
             )
-        } else {
-            null
         }
 
         return flowOf(story to siteMeta)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 
 /**
- * Copy from the tivi app.
+ * Source: https://github.com/chrisbanes/tivi
  */
-@OptIn(ExperimentalCoroutinesApi::class)
+@ExperimentalCoroutinesApi
 abstract class SubjectInteractor<PARAMS : Any?, DATA> {
 
     // Ideally this would be buffer = 0, since we use flatMapLatest below, BUT invoke is not

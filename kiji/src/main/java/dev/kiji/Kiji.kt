@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.decode.SvgDecoder
 import com.squareup.moshi.Moshi
-import dev.kiji.core.moshi.HackerNewsStoryTypeAdapter
-import dev.kiji.core.moshi.ZonedDateTimeConverter
+import dev.kiji.core.network.NetworkModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import okhttp3.OkHttpClient
@@ -46,10 +45,7 @@ class Kiji : Application(), ImageLoaderFactory {
             .build()
     }
 
-    val moshi: Moshi = Moshi.Builder()
-        .add(ZonedDateTimeConverter)
-        .add(HackerNewsStoryTypeAdapter)
-        .build()
+    val moshi: Moshi = NetworkModule.provideMoshi()
 
     val apiBuilder: Retrofit.Builder by lazy {
         val moshiConverterFactory: MoshiConverterFactory = MoshiConverterFactory.create(moshi)

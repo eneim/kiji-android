@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,35 @@
 
 package dev.kiji.services.hackernews
 
-import dev.kiji.core.data.asResult
-import dev.kiji.core.data.entities.Service
-import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.entities.User
-import dev.kiji.core.data.hackernews.HackerNewsApi
-import dev.kiji.core.data.hackernews.entities.HackerNewsItem
 import dev.kiji.core.domain.ResultInteractor
+import dev.kiji.data.entities.Service
+import dev.kiji.data.entities.Story
+import dev.kiji.data.entities.User
+import dev.kiji.data.hnews.contract.HackerNewsApi
+import dev.kiji.data.hnews.contract.HackerNewsItem
 
 private class HackerNewsStoryFetcher(
     private val api: HackerNewsApi
 ) : ResultInteractor<Long, Story?>() {
 
     override suspend fun doWork(params: Long): Story? {
-        val item = api.getItem(params).asResult().getOrNull() ?: return null
+        val item = api.getItem(params)
         return mapStory(item)
     }
 
     private suspend fun mapStory(item: HackerNewsItem): Story {
-        val user = if (item.author != null) {
-            api.getUser(item.author).asResult().getOrNull()?.let {
-                val userUrl = "https://news.ycombinator.com/user?id=${it.id}"
-                User(
-                    iid = userUrl,
-                    handle = it.id,
-                    url = userUrl,
-                    image = null,
-                    created = it.createdTimestampMillis,
-                    service = Service.HackerNews,
-                )
-            }
+        val authorId = item.author
+        val user = if (authorId != null) {
+            val hackerNewsUser = api.getUser(authorId)
+            val userUrl = "https://news.ycombinator.com/user?id=$authorId"
+            User(
+                iid = userUrl,
+                handle = hackerNewsUser.id,
+                url = userUrl,
+                image = null,
+                created = hackerNewsUser.createTimestamp,
+                service = Service.HackerNews,
+            )
         } else {
             null
         }
@@ -60,8 +59,8 @@ private class HackerNewsStoryFetcher(
             title = item.title.orEmpty(),
             content = item.text,
             images = emptyList(),
-            created = checkNotNull(item.createdTimestampMillis),
-            updated = checkNotNull(item.createdTimestampMillis),
+            created = checkNotNull(item.createTimestamp),
+            updated = checkNotNull(item.createTimestamp),
             author = user,
             service = Service.HackerNews
         )

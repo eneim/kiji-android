@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,17 @@ package dev.kiji.services.uplabs
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.uplabs.UpLabsApi
-import dev.kiji.core.data.uplabs.UpLabsItem
 import dev.kiji.core.domain.PagingDataInteractor
 import dev.kiji.core.domain.ResultInteractor
+import dev.kiji.data.entities.Story
+import dev.kiji.data.uplabs.UpLabsApi
+import dev.kiji.data.uplabs.UpLabsItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-class UpLabsFeedPagingInteractor(
+@ExperimentalCoroutinesApi
+internal class UpLabsFeedPagingInteractor(
     private val api: UpLabsApi,
     private val storyFetcher: ResultInteractor<Pair<Int, UpLabsItem>, Story>,
 ) : PagingDataInteractor<UpLabsFeedPagingInteractor.Params, Story>() {

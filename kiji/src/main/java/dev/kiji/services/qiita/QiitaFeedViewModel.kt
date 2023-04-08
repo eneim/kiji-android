@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dev.kiji.Kiji
-import dev.kiji.core.data.entities.Image
-import dev.kiji.core.data.entities.Service
-import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.entities.User
-import dev.kiji.core.data.qiita.QiitaApi
-import dev.kiji.core.data.qiita.QiitaApi.Companion.getInstance
-import dev.kiji.core.data.qiita.entities.Item
+import dev.kiji.data.entities.Image
+import dev.kiji.data.entities.Service
+import dev.kiji.data.entities.Story
+import dev.kiji.data.entities.User
+import dev.kiji.data.qiita.QiitaApi
+import dev.kiji.data.qiita.QiitaApi.Companion.getInstance
+import dev.kiji.data.qiita.entities.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package dev.kiji.core.domain
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
- * Copy from the tivi app.
+ * Source: https://github.com/chrisbanes/tivi
  */
+@ExperimentalCoroutinesApi
 abstract class PagingDataInteractor<P : PagingDataInteractor.Parameters<T>, T : Any> :
     SubjectInteractor<P, PagingData<T>>() {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,16 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dev.kiji.Kiji
-import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.uplabs.UpLabsApi
 import dev.kiji.core.domain.PagingDataInteractor
-import dev.kiji.core.utils.buildApi
+import dev.kiji.core.network.buildApi
+import dev.kiji.data.entities.Story
+import dev.kiji.data.uplabs.UpLabsApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 class UpLabsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val api: UpLabsApi = (application as Kiji).apiBuilder.buildApi()
@@ -39,7 +42,7 @@ class UpLabsViewModel(application: Application) : AndroidViewModel(application) 
     val feedData: Flow<PagingData<Story>> = feedInteractor.flow.cachedIn(viewModelScope)
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             feedInteractor(UpLabsFeedPagingInteractor.Params(PAGING_CONFIG))
         }
     }

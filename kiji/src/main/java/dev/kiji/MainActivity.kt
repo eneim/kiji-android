@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,53 +21,29 @@ import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.kiji.core.compose.LocalCurrentMinute
-import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.hackernews.HackerNewsApi
-import dev.kiji.core.data.website.MetaTagsApi
-import dev.kiji.core.domain.ResultInteractor
 import dev.kiji.core.utils.ClockBroadcastReceiver
-import dev.kiji.core.utils.buildApi
-import dev.kiji.services.hackernews.HackerNewsFeedPagingInteractor
-import dev.kiji.services.hackernews.HackerNewsItemDetailsInteractor
 import dev.kiji.services.hackernews.HackerViewsViewModel
-import dev.kiji.services.hackernews.provideHackerNewsStoryFetcher
 import dev.kiji.ui.theme.KijiAppTheme
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(
+    ExperimentalCoroutinesApi::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalPagerApi::class,
+)
 class MainActivity : ComponentActivity() {
 
-    private val hackerViewsViewModel: HackerViewsViewModel by viewModels {
-        object : AbstractSavedStateViewModelFactory() {
-            override fun <T : ViewModel> create(
-                key: String, modelClass: Class<T>, handle: SavedStateHandle
-            ): T {
-                val hackerNewsApi: HackerNewsApi = kijiApp.apiBuilder.buildApi()
-                val metaTagsApi: MetaTagsApi = kijiApp.apiBuilder.buildApi()
-
-                val storyFetcher: ResultInteractor<Long, Story?> =
-                    provideHackerNewsStoryFetcher(hackerNewsApi)
-
-                @Suppress("UNCHECKED_CAST")
-                return HackerViewsViewModel(
-                    stateHandle = handle,
-                    feedInteractor = HackerNewsFeedPagingInteractor(
-                        api = hackerNewsApi, storyFetcher = storyFetcher
-                    ),
-                    itemInteractor = HackerNewsItemDetailsInteractor(
-                        api = metaTagsApi, storyFetcher = storyFetcher
-                    ),
-                ) as T
-            }
-        }
-    }
+    private val hackerViewsViewModel by HackerViewsViewModel.getInstance(this)
 
     private val clockBroadcastReceiver = ClockBroadcastReceiver()
 
@@ -79,10 +55,17 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
+            val systemUiController = rememberSystemUiController()
+            val darkTheme = isSystemInDarkTheme()
+            // Update the dark content of the system bars to match the theme
+            DisposableEffect(systemUiController, darkTheme) {
+                systemUiController.systemBarsDarkContentEnabled = !darkTheme
+                onDispose {}
+            }
             CompositionLocalProvider(
                 LocalCurrentMinute provides clockBroadcastReceiver.currentTimeMillis,
             ) {
-                KijiAppTheme {
+                KijiAppTheme(dynamicColor = false) {
                     KijiAppContent(
                         hackerViewsViewModel = hackerViewsViewModel,
                         qiitaFeedViewModel = viewModel(),

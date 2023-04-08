@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,28 @@
 
 package dev.kiji
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import dev.kiji.navigation.HomeContent
 import dev.kiji.services.hackernews.HackerViewsViewModel
 import dev.kiji.services.qiita.QiitaFeedViewModel
-import dev.kiji.navigation.HomeNavHost
 import dev.kiji.services.uplabs.UpLabsViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * The root Composable of the App.
  */
+@ExperimentalPagerApi
+@ExperimentalFoundationApi
+@ExperimentalCoroutinesApi
 @Composable
-fun KijiAppContent(
+internal fun KijiAppContent(
     hackerViewsViewModel: HackerViewsViewModel,
     qiitaFeedViewModel: QiitaFeedViewModel,
     upLabsViewModel: UpLabsViewModel,
@@ -40,9 +46,9 @@ fun KijiAppContent(
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.surface
     ) {
-        HomeNavHost(
+        HomeContent(
             hackerViewsViewModel = hackerViewsViewModel,
             qiitaFeedViewModel = qiitaFeedViewModel,
             upLabsViewModel = upLabsViewModel,

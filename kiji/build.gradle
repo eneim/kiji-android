@@ -69,6 +69,14 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:network"))
+
+    implementation(project(":data:hackernews-interface"))
+    implementation(project(":data:hackernews-impl"))
+
+    implementation(project(":data:common-interface"))
+    implementation(project(":data:common-impl"))
+
     implementation(libs.androidx.core)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.material)
@@ -96,6 +104,7 @@ dependencies {
     implementation(libs.accompanist.insets.ui)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.placeholder.material)
+    implementation(libs.accompanist.pager.indicators)
     //endregion
 
     implementation(libs.coil)

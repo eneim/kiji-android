@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,31 +19,28 @@ package dev.kiji.services.hackernews
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import dev.kiji.core.data.asResult
-import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.hackernews.HackerNewsApi
-import dev.kiji.core.data.hackernews.HackerNewsStoryPagingSource
 import dev.kiji.core.domain.PagingDataInteractor
 import dev.kiji.core.domain.ResultInteractor
+import dev.kiji.data.entities.Story
+import dev.kiji.data.hackernews.HackerNewsStoryPagingSource
+import dev.kiji.data.hnews.contract.HackerNewsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
-class HackerNewsFeedPagingInteractor(
+internal class HackerNewsFeedPagingInteractor(
     private val api: HackerNewsApi,
-    private val storyFetcher: ResultInteractor<Long, Story?>,
+    private val fetcher: ResultInteractor<Long, Story?>,
 ) : PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>() {
 
     override suspend fun createObservable(params: Params): Flow<PagingData<Story>> {
-        val getIds = when (params.type) {
-            HackerNewsFeedType.TopStories -> api.getTopStories()
-            HackerNewsFeedType.NewStories -> api.getNewStories()
-            HackerNewsFeedType.AskStories -> api.getAskStories()
-            HackerNewsFeedType.BestStories -> api.getBestStories()
-            HackerNewsFeedType.JobStories -> api.getJobStories()
-            HackerNewsFeedType.ShowStories -> api.getShowStories()
+        val ids: List<Long> = when (params.type) {
+            HackerNewsFeedType.TopStories -> api.getTopStoryIds()
+            HackerNewsFeedType.NewStories -> api.getNewStoryIds()
+            HackerNewsFeedType.AskStories -> api.getAskStoryIds()
+            HackerNewsFeedType.BestStories -> api.getBestStoryIds()
+            HackerNewsFeedType.JobStories -> api.getJobStoryIds()
+            HackerNewsFeedType.ShowStories -> api.getShowStoryIds()
         }
-
-        val ids: List<Long> = getIds.asResult().getOrThrow()
 
         return Pager(
             config = params.pagingConfig,
@@ -51,7 +48,7 @@ class HackerNewsFeedPagingInteractor(
             pagingSourceFactory = {
                 HackerNewsStoryPagingSource(
                     ids = ids,
-                    storyFetcher = storyFetcher,
+                    fetcher = fetcher,
                     dispatcher = Dispatchers.IO
                 )
             },

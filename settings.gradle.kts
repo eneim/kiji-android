@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,3 +33,15 @@ dependencyResolutionManagement {
 
 rootProject.name = "Kiji"
 include(":kiji")
+includeFolder("core")
+includeFolder("data")
+
+fun includeFolder(folderName: String) {
+    file("$rootDir/$folderName").listFiles()
+        ?.takeIf(Array<File>::isNotEmpty)
+        ?.forEach { module: File ->
+            if (file("${module.path}/build.gradle").exists() || file("$module/build.gradle.kts").exists()) {
+                include("${folderName}:${module.name}")
+            }
+        }
+}

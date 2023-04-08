@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Nam Nguyen
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,29 @@ package dev.kiji.navigation
 import android.app.Activity
 import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.pagerTabIndicatorOffset
 import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.compose.rememberFlowWithLifecycle
 import dev.kiji.core.utils.openCustomTab
@@ -39,32 +51,74 @@ import dev.kiji.services.qiita.QiitaFeed
 import dev.kiji.services.qiita.QiitaFeedViewModel
 import dev.kiji.services.uplabs.UpLabsFeed
 import dev.kiji.services.uplabs.UpLabsViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
-@Suppress("FunctionNaming")
+@ExperimentalPagerApi
+@ExperimentalFoundationApi
+@ExperimentalCoroutinesApi
 @Composable
-fun HomeNavHost(
+internal fun HomeContent(
     hackerViewsViewModel: HackerViewsViewModel,
     qiitaFeedViewModel: QiitaFeedViewModel,
     upLabsViewModel: UpLabsViewModel,
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    NavHost(
-        navController = navHostController,
-        startDestination = "hackernews",
-        modifier = modifier,
-    ) {
-        withHackerNewsFeed(viewModel = hackerViewsViewModel)
-        withQiitaFeed(viewModel = qiitaFeedViewModel)
-        withUpLabsFeed(viewModel = upLabsViewModel)
+    val feedBuilders: List<NavGraphBuilder.() -> Unit> = remember {
+        listOf(
+            { withHackerNewsFeed(viewModel = hackerViewsViewModel) },
+            { withQiitaFeed(viewModel = qiitaFeedViewModel) },
+            { withUpLabsFeed(viewModel = upLabsViewModel) },
+        )
+    }
+
+    val pagerState: PagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+
+    Column {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
+            },
+            modifier = Modifier.wrapContentHeight(),
+        ) {
+            Route.items.forEachIndexed { index, route ->
+                Tab(
+                    text = { Text(route.name) },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                )
+            }
+        }
+
+        HorizontalPager(
+            pageCount = Route.size,
+            state = pagerState,
+            modifier = Modifier.weight(1f),
+        ) {
+            val route = Route[it]
+            KijiNavHost(
+                navController = navHostController,
+                startRoute = route,
+                modifier = modifier,
+                builder = feedBuilders[it],
+            )
+        }
     }
 }
 
+@ExperimentalCoroutinesApi
 private fun NavGraphBuilder.withHackerNewsFeed(
     viewModel: HackerViewsViewModel,
 ) = navigation(
     startDestination = "feed",
-    route = "hackernews",
+    route = Route.HackerNews.value,
     builder = {
         composable("feed") {
             val context = LocalContext.current as Activity
@@ -83,7 +137,7 @@ private fun NavGraphBuilder.withQiitaFeed(
     viewModel: QiitaFeedViewModel,
 ) = navigation(
     startDestination = "feed",
-    route = "qiita",
+    route = Route.Qiita.value,
     builder = {
         composable("feed") {
             val context = LocalContext.current as Activity
@@ -99,12 +153,13 @@ private fun NavGraphBuilder.withQiitaFeed(
     }
 )
 
-@OptIn(ExperimentalFoundationApi::class)
+@ExperimentalFoundationApi
+@ExperimentalCoroutinesApi
 private fun NavGraphBuilder.withUpLabsFeed(
     viewModel: UpLabsViewModel
 ) = navigation(
     startDestination = "feed",
-    route = "uplabs",
+    route = Route.UpLabs.value,
     builder = {
         composable("feed") {
             val context = LocalContext.current as Activity
