@@ -1,8 +1,8 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp") version "1.7.20-1.0.7"
 }
 
 android {
@@ -38,7 +38,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -53,11 +53,12 @@ android {
     }
 
     buildFeatures {
+        viewBinding true
         compose true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "$compose_compiler_version"
+        kotlinCompilerExtensionVersion libs.versions.jetpack.compose.compiler.get()
     }
 
     packagingOptions {
@@ -68,77 +69,59 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 
-    def lifecycle_version = "2.6.0-alpha02"
+    implementation(libs.androidx.room.paging)
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-process:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
+    //region Jetpack Compose UI
+    implementation(platform(libs.compose.bom))
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
-    implementation("androidx.activity:activity-compose:1.6.0")
-    implementation("androidx.compose.ui:ui:$compose_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
-    implementation("androidx.compose.material3:material3:1.0.0-rc01")
-    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-rc01")
-    implementation("androidx.navigation:navigation-compose:2.6.0-alpha02")
+    implementation(libs.compose.ui)
+    implementation(libs.compose.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material3.window)
+    implementation(libs.compose.activity)
+    implementation(libs.compose.viewmodel)
+    implementation(libs.compose.paging)
 
-    def paging_version = "3.2.0-alpha02"
-    implementation("androidx.paging:paging-common-ktx:$paging_version")
-    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
-    implementation("androidx.paging:paging-compose:1.0.0-alpha16")
+    implementation(libs.accompanist.insets)
+    implementation(libs.accompanist.insets.ui)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.placeholder.material)
+    //endregion
 
-    def work_version = "2.8.0-beta01"
-    implementation("androidx.work:work-runtime-ktx:$work_version")
+    implementation(libs.coil)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.compose)
 
-    def accompanist_version = "0.26.2-beta"
-    // If you're using Material, use accompanist-placeholder-material
-    implementation("com.google.accompanist:accompanist-placeholder-material:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-insets:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-navigation-material:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-webview:$accompanist_version")
+    //region Square OSS
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.moshi)
 
-    def coil_version = "2.2.1"
-    implementation("io.coil-kt:coil:$coil_version")
-    implementation("io.coil-kt:coil-svg:$coil_version")
-    implementation("io.coil-kt:coil-compose:$coil_version")
+    implementation(libs.moshi.core)
+    implementation(libs.moshi.adapters)
+    ksp(libs.moshi.codegen)
 
-    def retrofit_version = "2.9.0"
-    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
-    implementation("com.squareup.retrofit2:converter-moshi:$retrofit_version")
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logging.interceptor)
+    //endregion
 
-    def moshi_version = "1.14.0"
-    implementation("com.squareup.moshi:moshi:$moshi_version")
-    implementation("com.squareup.moshi:moshi-adapters:$moshi_version")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshi_version")
-
-    // define a BOM and its version
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
-    // define any required OkHttp artifacts without version
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
-
-    implementation("androidx.webkit:webkit:1.5.0")
-    implementation("androidx.browser:browser:1.4.0")
-
-    implementation("org.jsoup:jsoup:1.15.3")
-    implementation("net.dankito.readability4j:readability4j:1.0.8")
-    implementation("com.samskivert:jmustache:1.15")
-
+    implementation("androidx.webkit:webkit:1.6.1")
+    implementation("androidx.browser:browser:1.5.0")
     implementation("io.github.aakira:napier:2.6.1")
 
-    testImplementation("junit:junit:4.13.2")
-
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
-
-    debugImplementation("androidx.compose.ui:ui-tooling:$compose_version")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+    testImplementation(libs.test.junit.core)
+    androidTestImplementation(libs.test.androidx.junit)
+    androidTestImplementation(libs.test.androidx.espresso.core)
+    androidTestImplementation(libs.test.compose.ui.junit)
+    debugImplementation(libs.test.compose.ui.tool)
 }

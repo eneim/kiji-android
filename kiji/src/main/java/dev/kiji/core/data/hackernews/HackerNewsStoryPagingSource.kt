@@ -31,6 +31,7 @@ internal class HackerNewsStoryPagingSource(
 
     private val indices = ids.indices
 
+    @Suppress("ReturnCount")
     override fun getRefreshKey(state: PagingState<Int, Story>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
         val id = state.closestItemToPosition(anchorPosition)?.oid?.toLong() ?: return null

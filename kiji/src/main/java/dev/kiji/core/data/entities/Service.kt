@@ -19,15 +19,15 @@ package dev.kiji.core.data.entities
 import androidx.compose.runtime.Immutable
 
 @Immutable
-sealed interface Service {
+sealed class Service(host: String) {
 
-    val host: String
+    val deeplinkHost: String = host
+        .replace("https", "kiji")
+        .replace("http", "kiji")
 
-    object HackerNews : Service {
-        override val host: String = "https://news.ycombinator.com/"
-    }
+    object HackerNews : Service("https://news.ycombinator.com")
 
-    object Qiita : Service {
-        override val host: String = "https://qiita.com/"
-    }
+    object Qiita : Service("https://qiita.com")
+
+    object UpLabs : Service("https://www.uplabs.com")
 }

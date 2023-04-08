@@ -22,10 +22,12 @@ buildscript {
     val compose_version: String by extra("1.3.0-rc01")
 }
 
+// https://youtrack.jetbrains.com/issue/KTIJ-19369/False-positive-cant-be-called-in-this-context-by-implicit-receiver-with-plugins-in-Gradle-version-catalogs-as-a-TOML-file#focus=Comments-27-6204464.0-0
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application") version "7.4.0-beta02" apply false
-    id("com.android.library") version "7.4.0-beta02" apply false
-    id("org.jetbrains.kotlin.android") version "1.7.20" apply false
+    alias(libs.plugins.kotlin.android).apply(false)
+    alias(libs.plugins.android.application).apply(false)
+    alias(libs.plugins.android.library).apply(false)
 }
 
 tasks.register("clean", Delete::class) {
@@ -36,17 +38,17 @@ allprojects {
     afterEvaluate {
         if (hasProperty("android") && hasProperty("dependencies")) {
             dependencies {
-                "coreLibraryDesugaring"("com.android.tools:desugar_jdk_libs:2.0.0")
+                "coreLibraryDesugaring"(libs.desugar.jdk.libs)
             }
         }
     }
 
     plugins.withType<com.android.build.gradle.BasePlugin>().configureEach {
         extensions.findByType<com.android.build.gradle.BaseExtension>()?.apply {
-            compileSdkVersion(33)
+            compileSdkVersion(libs.versions.build.compileSdk.get().toInt())
             defaultConfig {
-                minSdk = 21
-                targetSdk = 33
+                minSdk = libs.versions.build.minSdk.get().toInt()
+                targetSdk = libs.versions.build.targetSdk.get().toInt()
             }
 
             compileOptions {

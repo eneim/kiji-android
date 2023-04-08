@@ -18,13 +18,13 @@ package dev.kiji.core.data.hackernews
 
 import dev.kiji.core.data.hackernews.entities.HackerNewsItem
 import dev.kiji.core.data.hackernews.entities.HackerNewsUser
-import dev.kiji.core.utils.Endpoint
+import dev.kiji.core.utils.BaseUrl
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 // https://github.com/HackerNews/API
-@Endpoint("https://hacker-news.firebaseio.com")
+@BaseUrl("https://hacker-news.firebaseio.com")
 interface HackerNewsApi {
 
     @GET("/v0/maxitem")

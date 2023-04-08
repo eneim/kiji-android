@@ -18,6 +18,7 @@ package dev.kiji.navigation
 
 import android.app.Activity
 import android.net.Uri
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,25 +33,30 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.compose.rememberFlowWithLifecycle
 import dev.kiji.core.utils.openCustomTab
-import dev.kiji.home.hackernews.HackerNewsFeed
-import dev.kiji.home.hackernews.HackerViewsViewModel
-import dev.kiji.home.qiita.QiitaFeed
-import dev.kiji.home.qiita.QiitaFeedViewModel
+import dev.kiji.services.hackernews.HackerNewsFeed
+import dev.kiji.services.hackernews.HackerViewsViewModel
+import dev.kiji.services.qiita.QiitaFeed
+import dev.kiji.services.qiita.QiitaFeedViewModel
+import dev.kiji.services.uplabs.UpLabsFeed
+import dev.kiji.services.uplabs.UpLabsViewModel
 
+@Suppress("FunctionNaming")
 @Composable
 fun HomeNavHost(
     hackerViewsViewModel: HackerViewsViewModel,
     qiitaFeedViewModel: QiitaFeedViewModel,
+    upLabsViewModel: UpLabsViewModel,
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = "qiita",
+        startDestination = "hackernews",
         modifier = modifier,
     ) {
         withHackerNewsFeed(viewModel = hackerViewsViewModel)
         withQiitaFeed(viewModel = qiitaFeedViewModel)
+        withUpLabsFeed(viewModel = upLabsViewModel)
     }
 }
 
@@ -64,8 +70,7 @@ private fun NavGraphBuilder.withHackerNewsFeed(
             val context = LocalContext.current as Activity
             val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
             HackerNewsFeed(
-                data = rememberFlowWithLifecycle(flow = viewModel.feedData)
-                    .collectAsLazyPagingItems(),
+                data = viewModel.feedData.collectAsLazyPagingItems(),
                 currentTimeMillis = LocalCurrentMinute.current,
             ) {
                 context.openCustomTab(Uri.parse(it.data.url), primaryColor)
@@ -85,6 +90,28 @@ private fun NavGraphBuilder.withQiitaFeed(
             val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
             QiitaFeed(
                 data = viewModel.data,
+                currentTimeMillis = LocalCurrentMinute.current,
+                onAction = {
+                    context.openCustomTab(Uri.parse(it.data.url), primaryColor)
+                }
+            )
+        }
+    }
+)
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun NavGraphBuilder.withUpLabsFeed(
+    viewModel: UpLabsViewModel
+) = navigation(
+    startDestination = "feed",
+    route = "uplabs",
+    builder = {
+        composable("feed") {
+            val context = LocalContext.current as Activity
+            val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+            UpLabsFeed(
+                data = rememberFlowWithLifecycle(flow = viewModel.feedData)
+                    .collectAsLazyPagingItems(),
                 currentTimeMillis = LocalCurrentMinute.current,
                 onAction = {
                     context.openCustomTab(Uri.parse(it.data.url), primaryColor)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.kiji.home.qiita
+package dev.kiji.services.qiita
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues

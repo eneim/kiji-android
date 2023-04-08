@@ -14,45 +14,33 @@
  * limitations under the License.
  */
 
-package dev.kiji.home.hackernews
+package dev.kiji.services.uplabs
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import dev.kiji.core.data.asResult
 import dev.kiji.core.data.entities.Story
-import dev.kiji.core.data.hackernews.HackerNewsApi
-import dev.kiji.core.data.hackernews.HackerNewsStoryPagingSource
+import dev.kiji.core.data.uplabs.UpLabsApi
+import dev.kiji.core.data.uplabs.UpLabsItem
 import dev.kiji.core.domain.PagingDataInteractor
 import dev.kiji.core.domain.ResultInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
-class HackerNewsFeedPagingInteractor(
-    private val api: HackerNewsApi,
-    private val storyFetcher: ResultInteractor<Long, Story?>,
-) : PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>() {
+class UpLabsFeedPagingInteractor(
+    private val api: UpLabsApi,
+    private val storyFetcher: ResultInteractor<Pair<Int, UpLabsItem>, Story>,
+) : PagingDataInteractor<UpLabsFeedPagingInteractor.Params, Story>() {
 
     override suspend fun createObservable(params: Params): Flow<PagingData<Story>> {
-        val getIds = when (params.type) {
-            HackerNewsFeedType.TopStories -> api.getTopStories()
-            HackerNewsFeedType.NewStories -> api.getNewStories()
-            HackerNewsFeedType.AskStories -> api.getAskStories()
-            HackerNewsFeedType.BestStories -> api.getBestStories()
-            HackerNewsFeedType.JobStories -> api.getJobStories()
-            HackerNewsFeedType.ShowStories -> api.getShowStories()
-        }
-
-        val ids: List<Long> = getIds.asResult().getOrThrow()
-
         return Pager(
             config = params.pagingConfig,
             initialKey = null,
             pagingSourceFactory = {
-                HackerNewsStoryPagingSource(
-                    ids = ids,
-                    storyFetcher = storyFetcher,
-                    dispatcher = Dispatchers.IO
+                UpLabsStoryPagingSource(
+                    api = api,
+                    mapper = storyFetcher,
+                    dispatcher = Dispatchers.IO,
                 )
             },
         )
@@ -61,6 +49,5 @@ class HackerNewsFeedPagingInteractor(
 
     data class Params(
         override val pagingConfig: PagingConfig,
-        val type: HackerNewsFeedType
     ) : Parameters<Story>
 }

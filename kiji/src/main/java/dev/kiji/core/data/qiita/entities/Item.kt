@@ -16,7 +16,6 @@
 
 package dev.kiji.core.data.qiita.entities
 
-import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.time.ZonedDateTime
@@ -25,7 +24,6 @@ import java.util.concurrent.TimeUnit
 /**
  * ユーザからの投稿を表します。
  */
-@Keep
 @JsonClass(generateAdapter = true)
 data class Item(
     /**

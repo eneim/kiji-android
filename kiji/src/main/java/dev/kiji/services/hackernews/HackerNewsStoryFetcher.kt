@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.kiji.home.hackernews
+package dev.kiji.services.hackernews
 
 import dev.kiji.core.data.asResult
 import dev.kiji.core.data.entities.Service
@@ -24,7 +24,9 @@ import dev.kiji.core.data.hackernews.HackerNewsApi
 import dev.kiji.core.data.hackernews.entities.HackerNewsItem
 import dev.kiji.core.domain.ResultInteractor
 
-private class StoryFetcher(private val api: HackerNewsApi) : ResultInteractor<Long, Story?>() {
+private class HackerNewsStoryFetcher(
+    private val api: HackerNewsApi
+) : ResultInteractor<Long, Story?>() {
 
     override suspend fun doWork(params: Long): Story? {
         val item = api.getItem(params).asResult().getOrNull() ?: return null
@@ -66,4 +68,5 @@ private class StoryFetcher(private val api: HackerNewsApi) : ResultInteractor<Lo
     }
 }
 
-fun provideStoryFetcher(api: HackerNewsApi): ResultInteractor<Long, Story?> = StoryFetcher(api)
+fun provideHackerNewsStoryFetcher(api: HackerNewsApi): ResultInteractor<Long, Story?> =
+    HackerNewsStoryFetcher(api)

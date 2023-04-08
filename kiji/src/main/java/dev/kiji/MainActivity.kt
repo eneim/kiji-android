@@ -35,11 +35,11 @@ import dev.kiji.core.data.hackernews.HackerNewsApi
 import dev.kiji.core.data.website.MetaTagsApi
 import dev.kiji.core.domain.ResultInteractor
 import dev.kiji.core.utils.ClockBroadcastReceiver
-import dev.kiji.core.utils.create
-import dev.kiji.home.hackernews.HackerNewsFeedPagingInteractor
-import dev.kiji.home.hackernews.HackerNewsItemDetailsInteractor
-import dev.kiji.home.hackernews.HackerViewsViewModel
-import dev.kiji.home.hackernews.provideStoryFetcher
+import dev.kiji.core.utils.buildApi
+import dev.kiji.services.hackernews.HackerNewsFeedPagingInteractor
+import dev.kiji.services.hackernews.HackerNewsItemDetailsInteractor
+import dev.kiji.services.hackernews.HackerViewsViewModel
+import dev.kiji.services.hackernews.provideHackerNewsStoryFetcher
 import dev.kiji.ui.theme.KijiAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,11 +49,11 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(
                 key: String, modelClass: Class<T>, handle: SavedStateHandle
             ): T {
-                val hackerNewsApi: HackerNewsApi = kijiApp.apiBuilder.create()
-                val metaTagsApi: MetaTagsApi = kijiApp.apiBuilder.create()
+                val hackerNewsApi: HackerNewsApi = kijiApp.apiBuilder.buildApi()
+                val metaTagsApi: MetaTagsApi = kijiApp.apiBuilder.buildApi()
 
                 val storyFetcher: ResultInteractor<Long, Story?> =
-                    provideStoryFetcher(hackerNewsApi)
+                    provideHackerNewsStoryFetcher(hackerNewsApi)
 
                 @Suppress("UNCHECKED_CAST")
                 return HackerViewsViewModel(
@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(
             /* window = */ window,
-            /* decorFitsSystemWindows = */ false
+            /* decorFitsSystemWindows = */ true
         )
 
         setContent {
@@ -86,6 +86,7 @@ class MainActivity : ComponentActivity() {
                     KijiAppContent(
                         hackerViewsViewModel = hackerViewsViewModel,
                         qiitaFeedViewModel = viewModel(),
+                        upLabsViewModel = viewModel(),
                         navController = rememberNavController(),
                     )
                 }

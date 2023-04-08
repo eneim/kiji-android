@@ -22,9 +22,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import dev.kiji.home.hackernews.HackerViewsViewModel
-import dev.kiji.home.qiita.QiitaFeedViewModel
+import dev.kiji.services.hackernews.HackerViewsViewModel
+import dev.kiji.services.qiita.QiitaFeedViewModel
 import dev.kiji.navigation.HomeNavHost
+import dev.kiji.services.uplabs.UpLabsViewModel
 
 /**
  * The root Composable of the App.
@@ -33,6 +34,7 @@ import dev.kiji.navigation.HomeNavHost
 fun KijiAppContent(
     hackerViewsViewModel: HackerViewsViewModel,
     qiitaFeedViewModel: QiitaFeedViewModel,
+    upLabsViewModel: UpLabsViewModel,
     navController: NavHostController,
 ) {
     Surface(
@@ -43,6 +45,7 @@ fun KijiAppContent(
         HomeNavHost(
             hackerViewsViewModel = hackerViewsViewModel,
             qiitaFeedViewModel = qiitaFeedViewModel,
+            upLabsViewModel = upLabsViewModel,
             navHostController = navController
         )
     }

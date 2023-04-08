@@ -16,13 +16,13 @@
 
 package dev.kiji.core.data.website
 
-import dev.kiji.core.utils.Endpoint
+import dev.kiji.core.utils.BaseUrl
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query
 
-@Endpoint("https://metatags.io")
+@BaseUrl("https://metatags.io")
 interface MetaTagsApi {
 
     @Headers("referer: https://metatags.io/")

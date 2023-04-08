@@ -38,6 +38,7 @@ data class Story(
     val updated: Long = created,
     val author: User?,
     val service: Service,
+    val groupKey: Any? = null,
 ) {
 
     val website: String? = Uri.parse(link)?.host

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.kiji.home.hackernews
+package dev.kiji.services.hackernews
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues

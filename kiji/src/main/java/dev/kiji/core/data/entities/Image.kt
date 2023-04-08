@@ -24,4 +24,11 @@ data class Image(
     val width: Int = -1,
     val height: Int = -1,
     val thumbnails: List<Image> = emptyList(),
-)
+) {
+
+    val ratio: Float = if (height > 0) {
+        width.toFloat() / height.toFloat()
+    } else {
+        1F
+    }
+}

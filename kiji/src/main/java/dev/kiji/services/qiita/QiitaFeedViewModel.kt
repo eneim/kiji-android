@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.kiji.home.qiita
+package dev.kiji.services.qiita
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf

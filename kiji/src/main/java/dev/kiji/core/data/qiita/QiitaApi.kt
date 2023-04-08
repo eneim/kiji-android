@@ -19,11 +19,11 @@ package dev.kiji.core.data.qiita
 import com.squareup.moshi.Types
 import dev.kiji.Kiji
 import dev.kiji.core.data.qiita.entities.Item
-import dev.kiji.core.utils.Endpoint
+import dev.kiji.core.utils.BaseUrl
 import okio.buffer
 import okio.source
 
-@Endpoint("https://qiita.com")
+@BaseUrl("https://qiita.com")
 interface QiitaApi {
 
     suspend fun getItems(): List<Item>

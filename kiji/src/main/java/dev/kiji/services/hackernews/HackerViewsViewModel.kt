@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.kiji.home.hackernews
+package dev.kiji.services.hackernews
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HackerViewsViewModel(
-    private val stateHandle: SavedStateHandle, // TODO: use DataStore for persistent cache.
+    private val stateHandle: SavedStateHandle,
     private val feedInteractor: PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>,
     private val itemInteractor: ItemDetailsInteractor<Long?, Pair<Story, SiteMeta?>?>,
 ) : ViewModel() {

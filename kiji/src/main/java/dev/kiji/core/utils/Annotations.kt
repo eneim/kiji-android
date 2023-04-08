@@ -22,4 +22,4 @@ package dev.kiji.core.utils
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-annotation class Endpoint(val value: String)
+annotation class BaseUrl(val value: String)

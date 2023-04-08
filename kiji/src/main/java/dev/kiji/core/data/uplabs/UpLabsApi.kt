@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package dev.kiji.core.utils
+package dev.kiji.core.data.uplabs
 
-import retrofit2.Retrofit
+import dev.kiji.core.utils.BaseUrl
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-inline fun <reified T : Any> Retrofit.Builder.buildApi(): T {
-    val baseUrl = T::class.java.annotations
-        .filterIsInstance<BaseUrl>()
-        .first()
-        .value
-    return this.baseUrl(baseUrl).build()
-        .create(T::class.java)
+@BaseUrl("https://www.uplabs.com")
+interface UpLabsApi {
+
+    @GET("/all.json")
+    suspend fun getTop(
+        @Query("days_ago") daysAgo: Int, // Default 0
+        @Query("page") page: Int // Default 1
+    ): Response<List<UpLabsItem>>
 }
