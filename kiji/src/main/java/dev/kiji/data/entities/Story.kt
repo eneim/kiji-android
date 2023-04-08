@@ -48,5 +48,9 @@ data class Story(
 
     // https://icon.horse/icon/${url}
     // https://api.faviconkit.com/{url}/{size}
-    val faviconUrl: String? = website?.let { "https://api.faviconkit.com/$it/256" }
+    // https://www.google.com/s2/favicons?domain=$it&sz=256
+    val faviconUrl: String? = website?.let {
+        "https://api.faviconkit.com/$it/256"
+        // "https://www.google.com/s2/favicons?domain=$it&sz=256"
+    }
 }

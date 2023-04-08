@@ -24,11 +24,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -122,7 +122,7 @@ private fun NavGraphBuilder.withHackerNewsFeed(
     builder = {
         composable("feed") {
             val context = LocalContext.current as Activity
-            val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+            val primaryColor = MaterialTheme.colors.primary.toArgb()
             HackerNewsFeed(
                 data = viewModel.feedData.collectAsLazyPagingItems(),
                 currentTimeMillis = LocalCurrentMinute.current,
@@ -141,7 +141,7 @@ private fun NavGraphBuilder.withQiitaFeed(
     builder = {
         composable("feed") {
             val context = LocalContext.current as Activity
-            val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+            val primaryColor = MaterialTheme.colors.primary.toArgb()
             QiitaFeed(
                 data = viewModel.data,
                 currentTimeMillis = LocalCurrentMinute.current,
@@ -156,14 +156,14 @@ private fun NavGraphBuilder.withQiitaFeed(
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 private fun NavGraphBuilder.withUpLabsFeed(
-    viewModel: UpLabsViewModel
+    viewModel: UpLabsViewModel,
 ) = navigation(
     startDestination = "feed",
     route = Route.UpLabs.value,
     builder = {
         composable("feed") {
             val context = LocalContext.current as Activity
-            val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+            val primaryColor = MaterialTheme.colors.primary.toArgb()
             UpLabsFeed(
                 data = rememberFlowWithLifecycle(flow = viewModel.feedData)
                     .collectAsLazyPagingItems(),

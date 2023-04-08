@@ -26,9 +26,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +63,7 @@ fun UpLabsFeed(
             if (groupKey != null) {
                 stickyHeader(key = groupKey) {
                     Surface(
-                        color = MaterialTheme.colorScheme.inverseSurface,
+                        color = MaterialTheme.colors.onSurface,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight(),
@@ -71,7 +71,7 @@ fun UpLabsFeed(
                         Text(
                             text = groupKey.toString(),
                             textAlign = TextAlign.Start,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.caption,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                         )
                     }

@@ -37,10 +37,12 @@ includeFolder("core")
 includeFolder("data")
 
 fun includeFolder(folderName: String) {
-    file("$rootDir/$folderName").listFiles()
+    file(path = "$rootDir/$folderName").listFiles()
         ?.takeIf(Array<File>::isNotEmpty)
         ?.forEach { module: File ->
-            if (file("${module.path}/build.gradle").exists() || file("$module/build.gradle.kts").exists()) {
+            val buildFile = "$module/build.gradle"
+            val ktsBuildFile = "$module/build.gradle.kts"
+            if (file(buildFile).exists() || file(ktsBuildFile).exists()) {
                 include("${folderName}:${module.name}")
             }
         }

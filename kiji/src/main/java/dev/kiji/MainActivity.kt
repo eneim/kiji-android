@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalCurrentMinute provides clockBroadcastReceiver.currentTimeMillis,
             ) {
-                KijiAppTheme(dynamicColor = false) {
+                KijiAppTheme {
                     KijiAppContent(
                         hackerViewsViewModel = hackerViewsViewModel,
                         qiitaFeedViewModel = viewModel(),
