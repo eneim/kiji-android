@@ -24,13 +24,14 @@ import dev.kiji.core.network.NetworkModule
 import dev.kiji.core.network.buildApi
 import dev.kiji.data.hnews.contract.HackerNewsApi
 import dev.kiji.data.hnews.contract.HackerNewsItem
+import dev.kiji.data.hnews.kotlinx.KotlinxHackerNewsApi
 import dev.kiji.data.hnews.square.RetrofitHackerNewsApi
 import java.time.Duration
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 
-object HackerNewsDataModule {
+object HackerNewsModule {
 
   private val client by lazy {
     OkHttpClient.Builder()
@@ -55,8 +56,8 @@ object HackerNewsDataModule {
   }
 
   fun provideHackerNewsApi(): HackerNewsApi =
-    RetrofitHackerNewsApi
-  // KotlinxHackerNewsApi
+    //  RetrofitHackerNewsApi
+    KotlinxHackerNewsApi
   // LegacyHackerNewsApi(client, jacksonObjectMapper)
 }
 

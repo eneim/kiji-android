@@ -26,7 +26,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dev.kiji.core.domain.ItemDetailsInteractor
 import dev.kiji.core.domain.PagingDataInteractor
-import dev.kiji.data.HackerNewsDataModule
+import dev.kiji.data.HackerNewsModule
 import dev.kiji.data.common.CommonDataModule
 import dev.kiji.data.entities.SiteMeta
 import dev.kiji.data.entities.Story
@@ -104,7 +104,7 @@ internal class HackerViewsViewModel(
           modelClass: Class<T>,
           handle: SavedStateHandle,
         ): T {
-          val hackerNewsApi = HackerNewsDataModule.provideHackerNewsApi()
+          val hackerNewsApi = HackerNewsModule.provideHackerNewsApi()
           val metaTagsApi = CommonDataModule.provideMetaTagsApi()
           val storyFetcher = provideHackerNewsStoryFetcher(hackerNewsApi)
 
