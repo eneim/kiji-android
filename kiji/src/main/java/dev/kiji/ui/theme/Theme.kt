@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Nam Nguyen, nam@ene.im
+ * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.kiji.ui.theme
 
 import android.app.Activity
@@ -27,35 +26,35 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColors(
-    primary = Purple80,
-    secondary = PurpleGrey80,
+  primary = Purple80,
+  secondary = PurpleGrey80,
 )
 
 private val LightColorScheme = lightColors(
-    primary = Purple40,
-    secondary = PurpleGrey40,
+  primary = Purple40,
+  secondary = PurpleGrey40,
 )
 
 @Composable
 fun KijiAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
+  darkTheme: Boolean = isSystemInDarkTheme(),
+  content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+  val colorScheme = when {
+    darkTheme -> DarkColorScheme
+    else -> LightColorScheme
+  }
+  val view = LocalView.current
+  if (!view.isInEditMode) {
+    SideEffect {
+      WindowCompat.getInsetsController((view.context as Activity).window, view)
+        .isAppearanceLightStatusBars = darkTheme
     }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            WindowCompat.getInsetsController((view.context as Activity).window, view)
-                .isAppearanceLightStatusBars = darkTheme
-        }
-    }
+  }
 
-    MaterialTheme(
-        colors = colorScheme,
-        typography = Typography,
-        content = content
-    )
+  MaterialTheme(
+    colors = colorScheme,
+    typography = Typography,
+    content = content,
+  )
 }

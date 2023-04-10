@@ -20,10 +20,8 @@ plugins {
     alias(libs.plugins.kotlin.android).apply(false)
     alias(libs.plugins.android.application).apply(false)
     alias(libs.plugins.android.library).apply(false)
-}
-
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlinter)
 }
 
 allprojects {
@@ -41,6 +39,7 @@ allprojects {
             defaultConfig {
                 minSdk = libs.versions.build.minSdk.get().toInt()
                 targetSdk = libs.versions.build.targetSdk.get().toInt()
+                vectorDrawables.useSupportLibrary = true
             }
 
             compileOptions {
@@ -85,5 +84,18 @@ subprojects {
                     )
             }
         }
+    }
+
+    apply(plugin = "com.diffplug.spotless")
+    spotless {
+        kotlin {
+            target("src/**/*.kt")
+            licenseHeaderFile(rootProject.file("config/spotless/license_header.txt"))
+        }
+    }
+
+    apply(plugin = "org.jmailen.kotlinter")
+    kotlinter {
+        disabledRules = arrayOf("filename")
     }
 }

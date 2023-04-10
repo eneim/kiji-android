@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Nam Nguyen, nam@ene.im
+ * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.kiji.navigation
 
 import android.app.Activity
@@ -59,119 +58,119 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 @Composable
 internal fun HomeContent(
-    hackerViewsViewModel: HackerViewsViewModel,
-    qiitaFeedViewModel: QiitaFeedViewModel,
-    upLabsViewModel: UpLabsViewModel,
-    navHostController: NavHostController,
-    modifier: Modifier = Modifier,
+  hackerViewsViewModel: HackerViewsViewModel,
+  qiitaFeedViewModel: QiitaFeedViewModel,
+  upLabsViewModel: UpLabsViewModel,
+  navHostController: NavHostController,
+  modifier: Modifier = Modifier,
 ) {
-    val feedBuilders: List<NavGraphBuilder.() -> Unit> = remember {
-        listOf(
-            { withHackerNewsFeed(viewModel = hackerViewsViewModel) },
-            { withQiitaFeed(viewModel = qiitaFeedViewModel) },
-            { withUpLabsFeed(viewModel = upLabsViewModel) },
-        )
-    }
+  val feedBuilders: List<NavGraphBuilder.() -> Unit> = remember {
+    listOf(
+      { withHackerNewsFeed(viewModel = hackerViewsViewModel) },
+      { withQiitaFeed(viewModel = qiitaFeedViewModel) },
+      { withUpLabsFeed(viewModel = upLabsViewModel) },
+    )
+  }
 
-    val pagerState: PagerState = rememberPagerState()
-    val coroutineScope = rememberCoroutineScope()
+  val pagerState: PagerState = rememberPagerState()
+  val coroutineScope = rememberCoroutineScope()
 
-    Column {
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
-            },
-            modifier = Modifier.wrapContentHeight(),
-        ) {
-            Route.items.forEachIndexed { index, route ->
-                Tab(
-                    text = { Text(route.name) },
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                )
+  Column {
+    TabRow(
+      selectedTabIndex = pagerState.currentPage,
+      indicator = { tabPositions ->
+        TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
+      },
+      modifier = Modifier.wrapContentHeight(),
+    ) {
+      Route.items.forEachIndexed { index, route ->
+        Tab(
+          text = { Text(route.name) },
+          selected = pagerState.currentPage == index,
+          onClick = {
+            coroutineScope.launch {
+              pagerState.animateScrollToPage(index)
             }
-        }
-
-        HorizontalPager(
-            pageCount = Route.size,
-            state = pagerState,
-            modifier = Modifier.weight(1f),
-        ) {
-            val route = Route[it]
-            KijiNavHost(
-                navController = navHostController,
-                startRoute = route,
-                modifier = modifier,
-                builder = feedBuilders[it],
-            )
-        }
+          },
+        )
+      }
     }
+
+    HorizontalPager(
+      pageCount = Route.size,
+      state = pagerState,
+      modifier = Modifier.weight(1f),
+    ) {
+      val route = Route[it]
+      KijiNavHost(
+        navController = navHostController,
+        startRoute = route,
+        modifier = modifier,
+        builder = feedBuilders[it],
+      )
+    }
+  }
 }
 
 @ExperimentalCoroutinesApi
 private fun NavGraphBuilder.withHackerNewsFeed(
-    viewModel: HackerViewsViewModel,
+  viewModel: HackerViewsViewModel,
 ) = navigation(
-    startDestination = "feed",
-    route = Route.HackerNews.value,
-    builder = {
-        composable("feed") {
-            val context = LocalContext.current as Activity
-            val primaryColor = MaterialTheme.colors.primary.toArgb()
-            HackerNewsFeed(
-                data = viewModel.feedData.collectAsLazyPagingItems(),
-                currentTimeMillis = LocalCurrentMinute.current,
-            ) {
-                context.openCustomTab(Uri.parse(it.data.url), primaryColor)
-            }
-        }
+  startDestination = "feed",
+  route = Route.HackerNews.value,
+  builder = {
+    composable("feed") {
+      val context = LocalContext.current as Activity
+      val primaryColor = MaterialTheme.colors.primary.toArgb()
+      HackerNewsFeed(
+        data = viewModel.feedData.collectAsLazyPagingItems(),
+        currentTimeMillis = LocalCurrentMinute.current,
+      ) {
+        context.openCustomTab(Uri.parse(it.data.url), primaryColor)
+      }
     }
+  },
 )
 
 private fun NavGraphBuilder.withQiitaFeed(
-    viewModel: QiitaFeedViewModel,
+  viewModel: QiitaFeedViewModel,
 ) = navigation(
-    startDestination = "feed",
-    route = Route.Qiita.value,
-    builder = {
-        composable("feed") {
-            val context = LocalContext.current as Activity
-            val primaryColor = MaterialTheme.colors.primary.toArgb()
-            QiitaFeed(
-                data = viewModel.data,
-                currentTimeMillis = LocalCurrentMinute.current,
-                onAction = {
-                    context.openCustomTab(Uri.parse(it.data.url), primaryColor)
-                }
-            )
-        }
+  startDestination = "feed",
+  route = Route.Qiita.value,
+  builder = {
+    composable("feed") {
+      val context = LocalContext.current as Activity
+      val primaryColor = MaterialTheme.colors.primary.toArgb()
+      QiitaFeed(
+        data = viewModel.data,
+        currentTimeMillis = LocalCurrentMinute.current,
+        onAction = {
+          context.openCustomTab(Uri.parse(it.data.url), primaryColor)
+        },
+      )
     }
+  },
 )
 
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 private fun NavGraphBuilder.withUpLabsFeed(
-    viewModel: UpLabsViewModel,
+  viewModel: UpLabsViewModel,
 ) = navigation(
-    startDestination = "feed",
-    route = Route.UpLabs.value,
-    builder = {
-        composable("feed") {
-            val context = LocalContext.current as Activity
-            val primaryColor = MaterialTheme.colors.primary.toArgb()
-            UpLabsFeed(
-                data = rememberFlowWithLifecycle(flow = viewModel.feedData)
-                    .collectAsLazyPagingItems(),
-                currentTimeMillis = LocalCurrentMinute.current,
-                onAction = {
-                    context.openCustomTab(Uri.parse(it.data.url), primaryColor)
-                }
-            )
-        }
+  startDestination = "feed",
+  route = Route.UpLabs.value,
+  builder = {
+    composable("feed") {
+      val context = LocalContext.current as Activity
+      val primaryColor = MaterialTheme.colors.primary.toArgb()
+      UpLabsFeed(
+        data = rememberFlowWithLifecycle(flow = viewModel.feedData)
+          .collectAsLazyPagingItems(),
+        currentTimeMillis = LocalCurrentMinute.current,
+        onAction = {
+          context.openCustomTab(Uri.parse(it.data.url), primaryColor)
+        },
+      )
     }
+  },
 )

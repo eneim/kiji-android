@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Nam Nguyen, nam@ene.im
+ * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 @file:Suppress("NOTHING_TO_INLINE")
 
 package dev.kiji.core.compose
@@ -34,33 +33,33 @@ import kotlinx.coroutines.flow.StateFlow
  */
 @Composable
 fun <T> rememberFlowWithLifecycle(
-    flow: Flow<T>,
-    lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
+  flow: Flow<T>,
+  lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
+  minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
 ): Flow<T> = remember(flow, lifecycle) {
-    flow.flowWithLifecycle(
-        lifecycle = lifecycle,
-        minActiveState = minActiveState
-    )
+  flow.flowWithLifecycle(
+    lifecycle = lifecycle,
+    minActiveState = minActiveState,
+  )
 }
 
 @Composable
 fun <T> rememberStateWithLifecycle(
-    stateFlow: StateFlow<T>,
-    lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
+  stateFlow: StateFlow<T>,
+  lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
+  minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
 ): State<T> {
-    val initialValue = remember(stateFlow) { stateFlow.value }
-    return produceState(
-        key1 = stateFlow,
-        key2 = lifecycle,
-        key3 = minActiveState,
-        initialValue = initialValue
-    ) {
-        lifecycle.repeatOnLifecycle(minActiveState) {
-            stateFlow.collect {
-                this@produceState.value = it
-            }
-        }
+  val initialValue = remember(stateFlow) { stateFlow.value }
+  return produceState(
+    key1 = stateFlow,
+    key2 = lifecycle,
+    key3 = minActiveState,
+    initialValue = initialValue,
+  ) {
+    lifecycle.repeatOnLifecycle(minActiveState) {
+      stateFlow.collect {
+        this@produceState.value = it
+      }
     }
+  }
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Nam Nguyen, nam@ene.im
+ * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.kiji.core.domain
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,24 +28,24 @@ import kotlinx.coroutines.flow.flatMapLatest
 @ExperimentalCoroutinesApi
 abstract class SubjectInteractor<PARAMS : Any?, DATA> {
 
-    // Ideally this would be buffer = 0, since we use flatMapLatest below, BUT invoke is not
-    // suspending. This means that we can't suspend while flatMapLatest cancels any
-    // existing flows. The buffer of 1 means that we can use tryEmit() and buffer the value
-    // instead, resulting in mostly the same result.
-    private val paramState = MutableSharedFlow<PARAMS>(
-        replay = 1,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+  // Ideally this would be buffer = 0, since we use flatMapLatest below, BUT invoke is not
+  // suspending. This means that we can't suspend while flatMapLatest cancels any
+  // existing flows. The buffer of 1 means that we can use tryEmit() and buffer the value
+  // instead, resulting in mostly the same result.
+  private val paramState = MutableSharedFlow<PARAMS>(
+    replay = 1,
+    extraBufferCapacity = 1,
+    onBufferOverflow = BufferOverflow.DROP_OLDEST,
+  )
 
-    val flow: Flow<DATA> = paramState
-        .distinctUntilChanged()
-        .flatMapLatest(::createObservable)
-        .distinctUntilChanged()
+  val flow: Flow<DATA> = paramState
+    .distinctUntilChanged()
+    .flatMapLatest(::createObservable)
+    .distinctUntilChanged()
 
-    operator fun invoke(params: PARAMS) {
-        paramState.tryEmit(params)
-    }
+  operator fun invoke(params: PARAMS) {
+    paramState.tryEmit(params)
+  }
 
-    protected abstract suspend fun createObservable(params: PARAMS): Flow<DATA>
+  protected abstract suspend fun createObservable(params: PARAMS): Flow<DATA>
 }

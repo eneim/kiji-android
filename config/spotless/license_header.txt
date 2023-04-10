@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
+ * Copyright (C) $YEAR Nam Nguyen, nam@ene.im.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.kiji.data.hnews.square
-
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import dev.kiji.data.hnews.contract.HackerNewsUser
-
-@JsonClass(generateAdapter = true)
-internal data class MoshiHackerNewsUser(
-  override val id: String,
-  @Json(name = "created")
-  override val createTimestamp: Long,
-  override val karma: Int,
-  override val about: String?,
-  override val submitted: List<Long>?,
-) : HackerNewsUser

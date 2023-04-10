@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Nam Nguyen, nam@ene.im
+ * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.kiji.data.qiita.entities
 
 import androidx.annotation.Keep
@@ -26,24 +25,24 @@ import com.squareup.moshi.JsonClass
 @Keep
 @JsonClass(generateAdapter = true)
 data class Tag(
-    /**
-     * このタグをフォローしているユーザの数
-     */
-    @Json(name = "followers_count")
-    val followersCount: Int,
-    /**
-     * このタグに設定されたアイコン画像のURL
-     */
-    @Json(name = "icon_url")
-    val iconUrl: String,
-    /**
-     * タグを特定するための一意な名前
-     */
-    @Json(name = "id")
-    val id: String,
-    /**
-     * このタグが付けられた記事の数
-     */
-    @Json(name = "items_count")
-    val itemsCount: Int
+  /**
+   * このタグをフォローしているユーザの数
+   */
+  @Json(name = "followers_count")
+  val followersCount: Int,
+  /**
+   * このタグに設定されたアイコン画像のURL
+   */
+  @Json(name = "icon_url")
+  val iconUrl: String,
+  /**
+   * タグを特定するための一意な名前
+   */
+  @Json(name = "id")
+  val id: String,
+  /**
+   * このタグが付けられた記事の数
+   */
+  @Json(name = "items_count")
+  val itemsCount: Int,
 )

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Nam Nguyen, nam@ene.im
+ * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.kiji
 
 import android.content.Intent
@@ -37,53 +36,53 @@ import dev.kiji.ui.theme.KijiAppTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(
-    ExperimentalCoroutinesApi::class,
-    ExperimentalFoundationApi::class,
-    ExperimentalPagerApi::class,
+  ExperimentalCoroutinesApi::class,
+  ExperimentalFoundationApi::class,
+  ExperimentalPagerApi::class,
 )
 class MainActivity : ComponentActivity() {
 
-    private val hackerViewsViewModel by HackerViewsViewModel.getInstance(this)
+  private val hackerViewsViewModel by HackerViewsViewModel.getInstance(this)
 
-    private val clockBroadcastReceiver = ClockBroadcastReceiver()
+  private val clockBroadcastReceiver = ClockBroadcastReceiver()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(
-            /* window = */ window,
-            /* decorFitsSystemWindows = */ true
-        )
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    WindowCompat.setDecorFitsSystemWindows(
+      /* window = */ window,
+      /* decorFitsSystemWindows = */ true,
+    )
 
-        setContent {
-            val systemUiController = rememberSystemUiController()
-            val darkTheme = isSystemInDarkTheme()
-            // Update the dark content of the system bars to match the theme
-            DisposableEffect(systemUiController, darkTheme) {
-                systemUiController.systemBarsDarkContentEnabled = !darkTheme
-                onDispose {}
-            }
-            CompositionLocalProvider(
-                LocalCurrentMinute provides clockBroadcastReceiver.currentTimeMillis,
-            ) {
-                KijiAppTheme {
-                    KijiAppContent(
-                        hackerViewsViewModel = hackerViewsViewModel,
-                        qiitaFeedViewModel = viewModel(),
-                        upLabsViewModel = viewModel(),
-                        navController = rememberNavController(),
-                    )
-                }
-            }
+    setContent {
+      val systemUiController = rememberSystemUiController()
+      val darkTheme = isSystemInDarkTheme()
+      // Update the dark content of the system bars to match the theme
+      DisposableEffect(systemUiController, darkTheme) {
+        systemUiController.systemBarsDarkContentEnabled = !darkTheme
+        onDispose {}
+      }
+      CompositionLocalProvider(
+        LocalCurrentMinute provides clockBroadcastReceiver.currentTimeMillis,
+      ) {
+        KijiAppTheme {
+          KijiAppContent(
+            hackerViewsViewModel = hackerViewsViewModel,
+            qiitaFeedViewModel = viewModel(),
+            upLabsViewModel = viewModel(),
+            navController = rememberNavController(),
+          )
         }
+      }
     }
+  }
 
-    override fun onStart() {
-        super.onStart()
-        registerReceiver(clockBroadcastReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
-    }
+  override fun onStart() {
+    super.onStart()
+    registerReceiver(clockBroadcastReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
+  }
 
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(clockBroadcastReceiver)
-    }
+  override fun onStop() {
+    super.onStop()
+    unregisterReceiver(clockBroadcastReceiver)
+  }
 }
