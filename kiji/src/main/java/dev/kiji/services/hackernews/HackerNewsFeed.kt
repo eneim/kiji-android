@@ -33,7 +33,7 @@ fun HackerNewsFeed(
   data: LazyPagingItems<Story>,
   currentTimeMillis: Long,
   modifier: Modifier = Modifier,
-  onAction: (Action<Story>) -> Unit,
+  onAction: suspend (Action<Story>) -> Unit,
 ) {
   LazyColumn(
     userScrollEnabled = data.itemCount > 0,

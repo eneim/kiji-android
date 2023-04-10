@@ -32,6 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -53,12 +54,14 @@ import dev.kiji.R
 import dev.kiji.core.model.Action
 import dev.kiji.data.entities.Story
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun Story(
   story: Story?,
   currentTimeMillis: Long,
-  onAction: (Action<Story>) -> Unit,
+  onAction: suspend (Action<Story>) -> Unit,
   modifier: Modifier = Modifier,
   showFooter: Boolean = true,
 ) {
@@ -94,12 +97,18 @@ fun Story(
     }
   }
 
+  val coroutineScope = rememberCoroutineScope()
+
   Surface(
     modifier = modifier
       .fillMaxWidth()
       .wrapContentHeight()
       .clickable {
-        if (story != null) onAction(Action.ReadNow(story))
+        if (story != null) {
+          coroutineScope.launch(Dispatchers.Main.immediate) {
+            onAction(Action.ReadNow(story))
+          }
+        }
       },
   ) {
     Column(

@@ -34,7 +34,7 @@ fun QiitaFeed(
   data: SnapshotStateList<Story>,
   currentTimeMillis: Long,
   modifier: Modifier = Modifier,
-  onAction: (Action<Story>) -> Unit,
+  onAction: suspend (Action<Story>) -> Unit,
 ) {
   val listState = rememberLazyListState()
 

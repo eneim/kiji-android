@@ -20,28 +20,35 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import dev.kiji.core.model.Action
 import dev.kiji.data.entities.Story
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun ImageStory(
   story: Story?,
   currentTimeMillis: Long,
-  onAction: (Action<Story>) -> Unit,
+  onAction: suspend (Action<Story>) -> Unit,
   modifier: Modifier = Modifier,
   aspectRatio: Float? = null,
 ) {
   val image = story?.images?.firstOrNull()
   val ratio: Float = aspectRatio ?: image?.ratio ?: 1F
-
+  val coroutineScope = rememberCoroutineScope()
   Surface(
     modifier = modifier
       .aspectRatio(ratio)
       .clickable {
-        if (story != null) onAction(Action.ReadNow(story))
+        if (story != null) {
+          coroutineScope.launch(Dispatchers.Main.immediate) {
+            onAction(Action.ReadNow(story))
+          }
+        }
       },
   ) {
     AsyncImage(

@@ -76,23 +76,21 @@ internal fun HomeContent(
     listOf(
       {
         HackerNewsFeed(
-          data = rememberFlowWithLifecycle(flow = hackerViewsViewModel.feedData)
-            .collectAsLazyPagingItems(),
+          data = remember { hackerViewsViewModel.feedData }.collectAsLazyPagingItems(),
           currentTimeMillis = LocalCurrentMinute.current,
           onAction = onClickStory,
         )
       },
       {
         QiitaFeed(
-          data = qiitaFeedViewModel.data,
+          data = remember { qiitaFeedViewModel.data },
           currentTimeMillis = LocalCurrentMinute.current,
           onAction = onClickStory,
         )
       },
       {
         UpLabsFeed(
-          data = rememberFlowWithLifecycle(flow = upLabsViewModel.feedData)
-            .collectAsLazyPagingItems(),
+          data = remember { upLabsViewModel.feedData }.collectAsLazyPagingItems(),
           currentTimeMillis = LocalCurrentMinute.current,
           onAction = onClickStory,
         )
