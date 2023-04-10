@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.kiji.data.hackernews
+package dev.kiji.services.hackernews
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import dev.kiji.core.domain.ResultInteractor
 import dev.kiji.data.entities.Story
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 internal class HackerNewsStoryPagingSource(
   private val ids: List<Long>,
@@ -30,7 +34,6 @@ internal class HackerNewsStoryPagingSource(
 
   private val indices = ids.indices
 
-  @Suppress("ReturnCount")
   override fun getRefreshKey(state: PagingState<Int, Story>): Int? {
     val anchorPosition = state.anchorPosition ?: return null
     val id = state.closestItemToPosition(anchorPosition)?.oid?.toLong() ?: return null
@@ -43,8 +46,7 @@ internal class HackerNewsStoryPagingSource(
     val loadFromIndex: Int = if (params is LoadParams.Refresh) {
       0
     } else {
-      params.key
-        ?: return@withContext EMPTY_PAGE
+      params.key ?: return@withContext EMPTY_PAGE
     }
     val loadToIndex = (loadFromIndex + PAGE_SIZE).coerceAtMost(ids.lastIndex)
 

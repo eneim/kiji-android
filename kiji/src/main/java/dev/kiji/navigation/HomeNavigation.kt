@@ -43,7 +43,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.compose.rememberFlowWithLifecycle
+import dev.kiji.core.model.Action
 import dev.kiji.core.utils.openCustomTab
+import dev.kiji.data.entities.Story
 import dev.kiji.services.hackernews.HackerNewsFeed
 import dev.kiji.services.hackernews.HackerViewsViewModel
 import dev.kiji.services.qiita.QiitaFeed
@@ -64,18 +66,44 @@ internal fun HomeContent(
   navHostController: NavHostController,
   modifier: Modifier = Modifier,
 ) {
-  val feedBuilders: List<NavGraphBuilder.() -> Unit> = remember {
+  val context = LocalContext.current as Activity
+  val primaryColor = MaterialTheme.colors.primary.toArgb()
+  val onClickStory: (Action<Story>) -> Unit = remember {
+    { context.openCustomTab(Uri.parse(it.data.url), primaryColor) }
+  }
+
+  val feedBuilders: List<@Composable () -> Unit> = remember {
     listOf(
-      { withHackerNewsFeed(viewModel = hackerViewsViewModel) },
-      { withQiitaFeed(viewModel = qiitaFeedViewModel) },
-      { withUpLabsFeed(viewModel = upLabsViewModel) },
+      {
+        HackerNewsFeed(
+          data = rememberFlowWithLifecycle(flow = hackerViewsViewModel.feedData)
+            .collectAsLazyPagingItems(),
+          currentTimeMillis = LocalCurrentMinute.current,
+          onAction = onClickStory,
+        )
+      },
+      {
+        QiitaFeed(
+          data = qiitaFeedViewModel.data,
+          currentTimeMillis = LocalCurrentMinute.current,
+          onAction = onClickStory,
+        )
+      },
+      {
+        UpLabsFeed(
+          data = rememberFlowWithLifecycle(flow = upLabsViewModel.feedData)
+            .collectAsLazyPagingItems(),
+          currentTimeMillis = LocalCurrentMinute.current,
+          onAction = onClickStory,
+        )
+      },
     )
   }
 
   val pagerState: PagerState = rememberPagerState()
   val coroutineScope = rememberCoroutineScope()
 
-  Column {
+  Column(modifier = modifier) {
     TabRow(
       selectedTabIndex = pagerState.currentPage,
       indicator = { tabPositions ->
@@ -100,14 +128,8 @@ internal fun HomeContent(
       pageCount = Route.size,
       state = pagerState,
       modifier = Modifier.weight(1f),
-    ) {
-      val route = Route[it]
-      KijiNavHost(
-        navController = navHostController,
-        startRoute = route,
-        modifier = modifier,
-        builder = feedBuilders[it],
-      )
+    ) { page ->
+      feedBuilders[page]()
     }
   }
 }
@@ -142,7 +164,7 @@ private fun NavGraphBuilder.withQiitaFeed(
       val context = LocalContext.current as Activity
       val primaryColor = MaterialTheme.colors.primary.toArgb()
       QiitaFeed(
-        data = viewModel.data,
+        data = remember { viewModel.data },
         currentTimeMillis = LocalCurrentMinute.current,
         onAction = {
           context.openCustomTab(Uri.parse(it.data.url), primaryColor)

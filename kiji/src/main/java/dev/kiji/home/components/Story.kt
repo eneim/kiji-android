@@ -60,6 +60,7 @@ fun Story(
   currentTimeMillis: Long,
   onAction: (Action<Story>) -> Unit,
   modifier: Modifier = Modifier,
+  showFooter: Boolean = true,
 ) {
   val keyLine = 4.dp
   val data: StoryCellData = remember(story, currentTimeMillis) {
@@ -74,7 +75,7 @@ fun Story(
           ),
         )
       }
-      val footer = buildAnnotatedString {
+      val header = buildAnnotatedString {
         val user = story.author?.handle
         if (!user.isNullOrBlank()) {
           withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
@@ -85,7 +86,7 @@ fun Story(
       }
       StoryCellData(
         title = AnnotatedString(story.title),
-        header = footer,
+        header = header,
         footer = AnnotatedString(story.website.orEmpty()),
       )
     } else {
@@ -131,7 +132,7 @@ fun Story(
           ),
       )
 
-      if (data.footer.isNotBlank()) {
+      if (showFooter && data.footer.isNotBlank()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
           val iconUrl = story?.faviconUrl
           if (iconUrl != null) {

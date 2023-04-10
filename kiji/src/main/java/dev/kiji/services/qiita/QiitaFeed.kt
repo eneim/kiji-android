@@ -55,11 +55,12 @@ fun QiitaFeed(
         Divider()
       }
     } else {
-      items(data) {
+      items(data) { story ->
         Story(
-          story = it,
+          story = story,
           currentTimeMillis = currentTimeMillis,
           onAction = onAction,
+          showFooter = false,
         )
 
         Divider()

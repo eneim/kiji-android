@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,34 +15,18 @@
  */
 package dev.kiji.data.qiita.entities
 
-import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import dev.kiji.data.qiita.Tag
 
-/**
- * 記事に付けられた個々のタグを表します。
- */
-@Keep
 @JsonClass(generateAdapter = true)
-data class Tag(
-  /**
-   * このタグをフォローしているユーザの数
-   */
+internal data class MoshiTag(
   @Json(name = "followers_count")
-  val followersCount: Int,
-  /**
-   * このタグに設定されたアイコン画像のURL
-   */
+  override val followersCount: Int,
   @Json(name = "icon_url")
-  val iconUrl: String,
-  /**
-   * タグを特定するための一意な名前
-   */
+  override val iconUrl: String,
   @Json(name = "id")
-  val id: String,
-  /**
-   * このタグが付けられた記事の数
-   */
+  override val id: String,
   @Json(name = "items_count")
-  val itemsCount: Int,
-)
+  override val itemsCount: Int,
+) : Tag

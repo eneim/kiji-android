@@ -26,9 +26,12 @@ private class HackerNewsStoryFetcher(
   private val api: HackerNewsApi,
 ) : ResultInteractor<Long, Story?>() {
 
-  override suspend fun doWork(params: Long): Story? {
-    val item = api.getItem(params)
-    return mapStory(item)
+  override suspend fun doWork(params: Long): Story? = try {
+    api.getItem(params)
+      .takeIf { it.type == HackerNewsItem.Type.STORY }
+      ?.let { mapStory(it) }
+  } catch (ignore: Exception) {
+    null
   }
 
   private suspend fun mapStory(item: HackerNewsItem): Story {

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2023 Nam Nguyen, nam@ene.im.
+ * Copyright (c) 2023 Nam Nguyen, nam@ene.im
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,35 +15,20 @@
  */
 package dev.kiji.data.qiita.entities
 
-import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import dev.kiji.data.qiita.Reaction
+import dev.kiji.data.qiita.User
 import java.time.ZonedDateTime
 
-/**
- * Qiita Team上での絵文字リアクションを表します。Qiita Teamでのみ有効です。
- */
-@Keep
 @JsonClass(generateAdapter = true)
-data class Reaction(
-  /**
-   * データが作成された日時
-   */
+internal data class MoshiReaction(
   @Json(name = "created_at")
-  val createdAt: ZonedDateTime,
-  /**
-   * 絵文字画像のURL
-   */
+  override val createdAt: ZonedDateTime,
   @Json(name = "image_url")
-  val imageUrl: String,
-  /**
-   * 絵文字の識別子
-   */
+  override val imageUrl: String,
   @Json(name = "name")
-  val name: String,
-  /**
-   * Qiita上のユーザを表します。
-   */
+  override val name: String,
   @Json(name = "user")
-  val user: User,
-)
+  override val user: User,
+) : Reaction

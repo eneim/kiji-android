@@ -19,25 +19,24 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dev.kiji.Kiji
+import dev.kiji.data.QiitaApi
+import dev.kiji.data.QiitaModule
 import dev.kiji.data.entities.Image
 import dev.kiji.data.entities.Service
 import dev.kiji.data.entities.Story
 import dev.kiji.data.entities.User
-import dev.kiji.data.qiita.QiitaApi
-import dev.kiji.data.qiita.QiitaApi.Companion.getInstance
-import dev.kiji.data.qiita.entities.Item
+import dev.kiji.data.qiita.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class QiitaFeedViewModel(application: Application) : AndroidViewModel(application) {
 
-  private val api: QiitaApi = (application as Kiji).getInstance()
+  private val api: QiitaApi = QiitaModule.provideQiitaApi(application)
   val data = mutableStateListOf<Story>()
 
   init {
     viewModelScope.launch(Dispatchers.IO) {
-      val items = api.getItems()
+      val items = api.getItems(1, 20)
       val stories = items.map { item: Item ->
         Story(
           iid = item.id,
@@ -47,8 +46,8 @@ class QiitaFeedViewModel(application: Application) : AndroidViewModel(applicatio
           title = item.title,
           content = item.renderedBody,
           images = emptyList(),
-          created = item.created,
-          updated = item.updated,
+          created = item.createdAt.toEpochSecond(),
+          updated = item.updatedAt.toEpochSecond(),
           author = item.user.let { user ->
             User(
               iid = user.id,

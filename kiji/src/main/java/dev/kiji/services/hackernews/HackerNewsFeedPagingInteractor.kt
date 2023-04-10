@@ -21,11 +21,12 @@ import androidx.paging.PagingData
 import dev.kiji.core.domain.PagingDataInteractor
 import dev.kiji.core.domain.ResultInteractor
 import dev.kiji.data.entities.Story
-import dev.kiji.data.hackernews.HackerNewsStoryPagingSource
 import dev.kiji.data.hnews.contract.HackerNewsApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
+@ExperimentalCoroutinesApi
 internal class HackerNewsFeedPagingInteractor(
   private val api: HackerNewsApi,
   private val fetcher: ResultInteractor<Long, Story?>,
