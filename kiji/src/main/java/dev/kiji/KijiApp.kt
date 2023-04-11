@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dev.kiji.navigation.HomeContent
-import dev.kiji.services.hackernews.HackerViewsViewModel
+import dev.kiji.services.hackernews.HackerNewsViewModel
 import dev.kiji.services.qiita.QiitaFeedViewModel
 import dev.kiji.services.uplabs.UpLabsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +37,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @Composable
 internal fun KijiAppContent(
-  hackerViewsViewModel: HackerViewsViewModel,
+  hackerNewsViewModel: HackerNewsViewModel,
   qiitaFeedViewModel: QiitaFeedViewModel,
   upLabsViewModel: UpLabsViewModel,
   navController: NavHostController,
@@ -48,7 +48,7 @@ internal fun KijiAppContent(
     color = MaterialTheme.colors.surface,
   ) {
     HomeContent(
-      hackerViewsViewModel = hackerViewsViewModel,
+      hackerNewsViewModel = hackerNewsViewModel,
       qiitaFeedViewModel = qiitaFeedViewModel,
       upLabsViewModel = upLabsViewModel,
       navHostController = navController,

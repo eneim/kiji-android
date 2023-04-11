@@ -25,9 +25,9 @@ import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import dev.kiji.core.components.Story
 import dev.kiji.core.model.Action
 import dev.kiji.data.entities.Story
-import dev.kiji.home.components.Story
 
 @Composable
 fun QiitaFeed(

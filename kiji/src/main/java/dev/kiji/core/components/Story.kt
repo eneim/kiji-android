@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.kiji.home.components
+package dev.kiji.core.components
 
 import android.text.format.DateUtils
 import androidx.compose.foundation.clickable
@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -102,7 +103,7 @@ fun Story(
   Surface(
     modifier = modifier
       .fillMaxWidth()
-      .wrapContentHeight()
+      .fillMaxHeight()
       .clickable {
         if (story != null) {
           coroutineScope.launch(Dispatchers.Main.immediate) {

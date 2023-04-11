@@ -31,6 +31,7 @@ private class HackerNewsStoryFetcher(
       .takeIf { it.type == HackerNewsItem.Type.STORY }
       ?.let { mapStory(it) }
   } catch (ignore: Exception) {
+    ignore.printStackTrace()
     null
   }
 

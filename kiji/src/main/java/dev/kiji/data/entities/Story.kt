@@ -45,7 +45,6 @@ data class Story(
 
   val createdMillis: Long = TimeUnit.SECONDS.toMillis(created)
 
-  // https://icon.horse/icon/${url}
   // https://api.faviconkit.com/{url}/{size}
   // https://www.google.com/s2/favicons?domain=$it&sz=256
   val faviconUrl: String? = website?.let {

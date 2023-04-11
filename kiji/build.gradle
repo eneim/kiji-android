@@ -49,6 +49,15 @@ android {
     }
   }
 
+  // Epoxy ksp?
+  buildTypes.all { buildType ->
+    buildType.javaCompileOptions.annotationProcessorOptions.arguments =
+      [
+        validateEpoxyModelUsage: "true",
+        logEpoxyTimings        : "true",
+      ]
+  }
+
   buildFeatures {
     viewBinding true
     compose true
@@ -79,20 +88,24 @@ dependencies {
 
   implementation(libs.androidx.core)
   implementation(libs.androidx.activity)
+  implementation(libs.androidx.fragment)
   implementation(libs.androidx.material)
   implementation(libs.androidx.lifecycle.runtime)
   implementation(libs.androidx.lifecycle.process)
   implementation(libs.androidx.datastore.preferences.core)
   implementation(libs.androidx.navigation.compose)
   implementation(libs.androidx.constraintlayout.compose)
-  implementation("androidx.work:work-runtime-ktx:2.8.1")
-
   implementation(libs.androidx.room.paging)
+
+  implementation("androidx.webkit:webkit:1.6.1")
+  implementation("androidx.browser:browser:1.5.0")
+  implementation("androidx.work:work-runtime-ktx:2.8.1")
 
   //region Jetpack Compose UI
   implementation(platform(libs.compose.bom))
 
   implementation(libs.compose.ui)
+  implementation(libs.compose.viewbinding)
   implementation(libs.compose.preview)
   implementation(libs.compose.material)
   implementation(libs.compose.activity)
@@ -105,6 +118,13 @@ dependencies {
   implementation(libs.accompanist.placeholder.material)
   implementation(libs.accompanist.pager.indicators)
   //endregion
+
+  def epoxy_version = "5.1.2"
+  implementation("com.airbnb.android:epoxy:$epoxy_version")
+  implementation("com.airbnb.android:epoxy-paging3:$epoxy_version")
+  implementation("com.airbnb.android:epoxy-compose:$epoxy_version")
+  // Add the annotation processor if you are using Epoxy's annotations (recommended)
+  ksp("com.airbnb.android:epoxy-processor:$epoxy_version")
 
   implementation(libs.coil)
   implementation(libs.coil.svg)
@@ -123,8 +143,6 @@ dependencies {
   implementation(libs.okhttp.logging.interceptor)
   //endregion
 
-  implementation("androidx.webkit:webkit:1.6.1")
-  implementation("androidx.browser:browser:1.5.0")
   implementation("io.github.aakira:napier:2.6.1")
 
   testImplementation(libs.test.junit.core)

@@ -21,7 +21,7 @@ plugins {
 }
 
 android {
-  namespace = "dev.kiji.qiita.contract"
+  namespace = "dev.kiji.data.qiita.contract"
   defaultConfig {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles("consumer-rules.pro")

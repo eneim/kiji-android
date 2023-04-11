@@ -33,7 +33,7 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import dev.kiji.core.model.Action
 import dev.kiji.data.entities.Story
-import dev.kiji.home.components.ImageStory
+import dev.kiji.core.components.ImageStory
 
 @ExperimentalFoundationApi
 @Composable

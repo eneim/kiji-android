@@ -24,9 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
+import dev.kiji.core.components.Story
 import dev.kiji.core.model.Action
 import dev.kiji.data.entities.Story
-import dev.kiji.home.components.Story
 
 @Composable
 fun HackerNewsFeed(

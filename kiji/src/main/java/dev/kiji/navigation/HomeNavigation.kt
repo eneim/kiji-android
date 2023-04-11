@@ -47,7 +47,7 @@ import dev.kiji.core.model.Action
 import dev.kiji.core.utils.openCustomTab
 import dev.kiji.data.entities.Story
 import dev.kiji.services.hackernews.HackerNewsFeed
-import dev.kiji.services.hackernews.HackerViewsViewModel
+import dev.kiji.services.hackernews.HackerNewsViewModel
 import dev.kiji.services.qiita.QiitaFeed
 import dev.kiji.services.qiita.QiitaFeedViewModel
 import dev.kiji.services.uplabs.UpLabsFeed
@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 @Composable
 internal fun HomeContent(
-  hackerViewsViewModel: HackerViewsViewModel,
+  hackerNewsViewModel: HackerNewsViewModel,
   qiitaFeedViewModel: QiitaFeedViewModel,
   upLabsViewModel: UpLabsViewModel,
   navHostController: NavHostController,
@@ -76,7 +76,7 @@ internal fun HomeContent(
     listOf(
       {
         HackerNewsFeed(
-          data = remember { hackerViewsViewModel.feedData }.collectAsLazyPagingItems(),
+          data = remember { hackerNewsViewModel.feedData }.collectAsLazyPagingItems(),
           currentTimeMillis = LocalCurrentMinute.current,
           onAction = onClickStory,
         )
@@ -134,7 +134,7 @@ internal fun HomeContent(
 
 @ExperimentalCoroutinesApi
 private fun NavGraphBuilder.withHackerNewsFeed(
-  viewModel: HackerViewsViewModel,
+  viewModel: HackerNewsViewModel,
 ) = navigation(
   startDestination = "feed",
   route = Route.HackerNews.value,

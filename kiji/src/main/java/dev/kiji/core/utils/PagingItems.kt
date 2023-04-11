@@ -13,4 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.kiji.home
+package dev.kiji.core.utils
+
+interface PagingItems<T : Any> {
+
+  val size: Int
+
+  val indices: IntRange get() = 0 until size
+
+  fun peek(index: Int): T?
+
+  operator fun get(index: Int): T?
+
+  companion object {
+
+    fun <T : Any> empty() = object : PagingItems<T> {
+      override val size: Int = 0
+      override fun peek(index: Int): T? = null
+      override fun get(index: Int): T? = null
+    }
+  }
+}

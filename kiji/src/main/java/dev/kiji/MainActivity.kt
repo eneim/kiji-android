@@ -18,20 +18,20 @@ package dev.kiji
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
+import androidx.fragment.app.FragmentActivity
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.utils.ClockBroadcastReceiver
-import dev.kiji.services.hackernews.HackerViewsViewModel
+import dev.kiji.databinding.ActivityHomeBinding
+import dev.kiji.services.hackernews.HackerNewsViewModel
 import dev.kiji.ui.theme.KijiAppTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -40,9 +40,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
   ExperimentalFoundationApi::class,
   ExperimentalPagerApi::class,
 )
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
-  private val hackerViewsViewModel by HackerViewsViewModel.getInstance(this)
+  private val hackerNewsViewModel by HackerNewsViewModel.getInstance(this)
 
   private val clockBroadcastReceiver = ClockBroadcastReceiver()
 
@@ -65,12 +65,15 @@ class MainActivity : ComponentActivity() {
         LocalCurrentMinute provides clockBroadcastReceiver.currentTimeMillis,
       ) {
         KijiAppTheme {
-          KijiAppContent(
-            hackerViewsViewModel = hackerViewsViewModel,
+          /* KijiAppContent(
+            hackerNewsViewModel = hackerNewsViewModel,
             qiitaFeedViewModel = viewModel(),
             upLabsViewModel = viewModel(),
             navController = rememberNavController(),
-          )
+          ) */
+
+          // Using AndroidView to inject the Compose theme down to the content.
+          AndroidViewBinding(factory = ActivityHomeBinding::inflate) {}
         }
       }
     }

@@ -56,9 +56,9 @@ object HackerNewsModule {
   }
 
   fun provideHackerNewsApi(): HackerNewsApi =
-    //  RetrofitHackerNewsApi
+    // RetrofitHackerNewsApi
     KotlinxHackerNewsApi
-  // LegacyHackerNewsApi(client, jacksonObjectMapper)
+    // LegacyHackerNewsApi(client, jacksonObjectMapper)
 }
 
 private object HackerNewsItemTypeAdapter {
