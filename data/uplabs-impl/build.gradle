@@ -1,0 +1,43 @@
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.ksp)
+}
+
+android {
+  namespace("dev.kiji.data.uplabs")
+
+  defaultConfig {
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles "consumer-rules.pro"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  implementation(project(":core:network"))
+  implementation(project(":data:uplabs-interface"))
+
+  //region Square OSS
+  implementation(platform(libs.okhttp.bom))
+  implementation(libs.okhttp.core)
+  implementation(libs.okhttp.logging.interceptor)
+  //endregion
+
+  //region legacy
+  def jackson_version = "2.13.4"
+  implementation("com.fasterxml.jackson.core:jackson-annotations:${jackson_version}")
+  implementation("com.fasterxml.jackson.core:jackson-core:${jackson_version}")
+  implementation("com.fasterxml.jackson.core:jackson-databind:${jackson_version}")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jackson_version}")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jackson_version}")
+  //endregion
+
+  testImplementation(libs.test.junit.core)
+}

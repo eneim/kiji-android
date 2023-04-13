@@ -15,20 +15,20 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Source: https://github.com/android/nowinandroid -->
-    <!-- Allows us to override night specific attributes in the
-         values-night folder. -->
-    <style name="NightAdjusted" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
-    </style>
+  <!-- Source: https://github.com/android/nowinandroid -->
+  <!-- Allows us to override night specific attributes in the
+       values-night folder. -->
+  <style name="NightAdjusted" parent="Theme.Material3.DayNight.NoActionBar">
+    <item name="android:windowLightStatusBar">true</item>
+    <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+  </style>
 
-    <!-- Allows us to override platform level specific attributes in their
-         respective values-vXX folder. -->
-    <style name="PlatformAdjusted" parent="NightAdjusted">
-        <item name="android:statusBarColor">@color/black30</item>
-    </style>
+  <!-- Allows us to override platform level specific attributes in their
+       respective values-vXX folder. -->
+  <style name="PlatformAdjusted" parent="NightAdjusted">
+    <item name="android:statusBarColor">@color/black30</item>
+  </style>
 
-    <style name="Theme.Kiji" parent="PlatformAdjusted" />
+  <style name="Theme.Kiji" parent="PlatformAdjusted" />
 
 </resources>

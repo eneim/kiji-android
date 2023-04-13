@@ -15,26 +15,24 @@
  */
 package dev.kiji.services.uplabs
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import dev.kiji.Kiji
 import dev.kiji.core.domain.PagingDataInteractor
-import dev.kiji.core.network.buildApi
+import dev.kiji.data.UpLabsApi
+import dev.kiji.data.UpLabsModule
 import dev.kiji.data.entities.Story
-import dev.kiji.data.uplabs.UpLabsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
-class UpLabsViewModel(application: Application) : AndroidViewModel(application) {
+class UpLabsViewModel : ViewModel() {
 
-  private val api: UpLabsApi = (application as Kiji).apiBuilder.buildApi()
+  private val api: UpLabsApi = UpLabsModule.provideUpLabsApi()
   private val feedInteractor: PagingDataInteractor<UpLabsFeedPagingInteractor.Params, Story> =
     UpLabsFeedPagingInteractor(api, provideUpLabsStoryMapper())
 

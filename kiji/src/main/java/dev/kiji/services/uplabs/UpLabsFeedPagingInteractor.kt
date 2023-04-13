@@ -20,8 +20,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.kiji.core.domain.PagingDataInteractor
 import dev.kiji.core.domain.ResultInteractor
+import dev.kiji.data.UpLabsApi
 import dev.kiji.data.entities.Story
-import dev.kiji.data.uplabs.UpLabsApi
 import dev.kiji.data.uplabs.UpLabsItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("NOTHING_TO_INLINE")
-
 package dev.kiji.core.compose
 
 import androidx.compose.runtime.Composable
@@ -29,7 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Copy from the tivi app.
+ * Source: https://github.com/chrisbanes/tivi
  */
 @Composable
 fun <T> rememberFlowWithLifecycle(

@@ -77,6 +77,9 @@ android {
 dependencies {
   implementation(project(":core:network"))
 
+  implementation(project(":data:uplabs-interface"))
+  implementation(project(":data:uplabs-impl"))
+
   implementation(project(":data:qiita-interface"))
   implementation(project(":data:qiita-impl"))
 

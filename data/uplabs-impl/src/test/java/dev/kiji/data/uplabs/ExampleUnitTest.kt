@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.kiji.core.utils
+package dev.kiji.data.uplabs
 
-interface PagingItems<T : Any> {
+import org.junit.Assert.*
+import org.junit.Test
 
-  val size: Int
-
-  val indices: IntRange get() = 0 until size
-
-  fun peek(index: Int): T?
-
-  operator fun get(index: Int): T?
-
-  companion object {
-
-    fun <T : Any> empty() = object : PagingItems<T> {
-      override val size: Int = 0
-      override fun peek(index: Int): T? = null
-      override fun get(index: Int): T? = null
-    }
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+class ExampleUnitTest {
+  @Test
+  fun addition_isCorrect() {
+    assertEquals(4, 2 + 2)
   }
 }
-
-fun <T : Any> PagingItems<T>.getChunk(chunk: List<Int>): List<T?> = chunk.map { get(it) }

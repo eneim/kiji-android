@@ -18,11 +18,9 @@ package dev.kiji.services.uplabs
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import dev.kiji.core.domain.ResultInteractor
+import dev.kiji.data.UpLabsApi
 import dev.kiji.data.entities.Story
-import dev.kiji.data.uplabs.UpLabsApi
 import dev.kiji.data.uplabs.UpLabsItem
-import io.github.aakira.napier.Napier
-import java.io.IOException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -43,16 +41,13 @@ class UpLabsStoryPagingSource(
     params: LoadParams<Int>,
   ): LoadResult<Int, Story> = withContext(dispatcher) {
     val page = params.key ?: 0
-    val response = api.getTop(page, 1)
+    val items = api.getTop(page, 1)
 
     return@withContext try {
-      val items = response.body().takeIf { response.isSuccessful } ?: throw IOException("")
       val stories = items.map { item ->
         async { mapper.executeSync(page to item) }
       }
         .awaitAll()
-
-      Napier.w { "UpLabs loads: page=$page, size=${stories.size}" }
 
       LoadResult.Page(
         data = stories,
