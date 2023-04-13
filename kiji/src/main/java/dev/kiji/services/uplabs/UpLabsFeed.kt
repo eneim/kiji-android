@@ -49,7 +49,7 @@ fun UpLabsFeed(
   if (data.itemCount == 0) {
     LazyVerticalGrid(
       userScrollEnabled = false,
-      columns = GridCells.Adaptive(minSize = 180.dp),
+      columns = GridCells.Adaptive(minSize = 160.dp),
       contentPadding = WindowInsets.systemBars
         .add(WindowInsets(top = 4.dp, left = 4.dp, right = 4.dp))
         .asPaddingValues(),
@@ -73,7 +73,7 @@ fun UpLabsFeed(
     }
   } else {
     LazyVerticalStaggeredGrid(
-      columns = StaggeredGridCells.Adaptive(minSize = 180.dp),
+      columns = StaggeredGridCells.Adaptive(minSize = 160.dp),
       contentPadding = WindowInsets.systemBars
         .add(WindowInsets(top = 4.dp, left = 4.dp, right = 4.dp))
         .asPaddingValues(),
