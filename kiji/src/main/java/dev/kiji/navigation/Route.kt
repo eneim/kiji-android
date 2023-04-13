@@ -21,10 +21,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 
-enum class Route(val value: String) {
-  HackerNews("hackernews"), // Kotlinx Serialization
-  Qiita("qiita"),           // Moshi
-  UpLabs("uplabs"),         // Jackson
+enum class Route(val value: String, val title: String) {
+  HackerNews("hackernews", "news.ycombinator.com"), // Kotlinx Serialization
+  Qiita("qiita", "qiita.com"),                      // Moshi
+  UpLabs("uplabs", "uplabs.com"),                   // Jackson
   ;
 
   companion object {

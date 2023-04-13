@@ -44,7 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     val routes = Route.items
     val mediator = TabLayoutMediator(binding.tabs, binding.pager, true, true) { tab, pos ->
       val route = routes[pos]
-      tab.text = route.name
+      tab.text = route.title
     }
 
     binding.pager.adapter = HomeFragmentPagerAdapter(
