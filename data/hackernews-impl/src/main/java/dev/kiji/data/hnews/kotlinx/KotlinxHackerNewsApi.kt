@@ -18,7 +18,7 @@ package dev.kiji.data.hnews.kotlinx
 import dev.kiji.data.hnews.contract.HackerNewsApi
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.android.Android
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
@@ -29,7 +29,7 @@ private const val BASE_URL = "https://hacker-news.firebaseio.com"
 
 internal object KotlinxHackerNewsApi : HackerNewsApi {
 
-  private val client = HttpClient(Android) {
+  private val client = HttpClient(OkHttp) {
     install(ContentNegotiation) {
       json()
     }

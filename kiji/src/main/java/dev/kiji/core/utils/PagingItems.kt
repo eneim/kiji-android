@@ -36,3 +36,4 @@ interface PagingItems<T : Any> {
 }
 
 fun <T : Any> PagingItems<T>.getChunk(chunk: List<Int>): List<T?> = chunk.map { get(it) }
+fun <T : Any> PagingItems<T>.peekChunk(chunk: List<Int>): List<T?> = chunk.map { peek(it) }

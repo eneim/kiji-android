@@ -40,13 +40,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.airbnb.epoxy.ComposeEpoxyModel
 import com.airbnb.epoxy.TypedEpoxyController
-import com.airbnb.epoxy.composableInterop
+import com.airbnb.epoxy.composeEpoxyModel
 import dev.kiji.R
 import dev.kiji.core.components.Story
 import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.utils.PagingItems
 import dev.kiji.core.utils.getChunk
 import dev.kiji.core.utils.openCustomTab
+import dev.kiji.core.utils.peekChunk
 import dev.kiji.data.entities.Story
 import dev.kiji.databinding.FragmentEpoxyViewBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -86,11 +87,13 @@ class HackerNewsFeedFragment : Fragment(R.layout.fragment_epoxy_view) {
       object : OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
           try {
-            val topItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val topItemPosition = layoutManager.findFirstVisibleItemPosition()
               .takeIf { it != RecyclerView.NO_POSITION } ?: return
             val model = controller.adapter.getModelAtPosition(topItemPosition)
               as? ComposeEpoxyModel ?: return
-            lastSeenItemPosition = model.keys.firstOrNull() as? Int ?: RecyclerView.NO_POSITION
+            lastSeenItemPosition = (model.tag(R.id.compose_epoxy_model_tag) as? List<*>)
+              ?.firstOrNull() as? Int
+              ?: RecyclerView.NO_POSITION
           } catch (ignore: IndexOutOfBoundsException) {
             ignore.printStackTrace()
           }
@@ -115,11 +118,13 @@ class HackerNewsFeedFragment : Fragment(R.layout.fragment_epoxy_view) {
   ) : TypedEpoxyController<PagingItems<Story>>() {
     override fun buildModels(data: PagingItems<Story>?) {
       val stories = data ?: PagingItems.empty()
-      stories.indices.chunked(chunkSize)
-        .forEachIndexed { cIndex, chunk ->
-          composableInterop(
+      val indices = if (stories.size > 0) stories.indices else 0..50
+
+      indices.chunked(chunkSize)
+        .mapIndexed { cIndex, chunk ->
+          val model = composeEpoxyModel(
             id = "story::$chunk",
-            keys = chunk.toTypedArray(), // Important for manual saving/restoring scroll position!!
+            keys = stories.peekChunk(chunk).filterNotNull().toTypedArray(),
           ) {
             val primaryColor = MaterialTheme.colors.primary.toArgb()
             StoryRow(
@@ -129,7 +134,11 @@ class HackerNewsFeedFragment : Fragment(R.layout.fragment_epoxy_view) {
               primaryColor = primaryColor,
             )
           }
+          // Important for manual saving/restoring scroll position!!
+          model.addTag(R.id.compose_epoxy_model_tag, chunk)
+          return@mapIndexed model
         }
+        .onEach(::add)
     }
   }
 

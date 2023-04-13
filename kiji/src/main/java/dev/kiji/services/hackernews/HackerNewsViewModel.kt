@@ -61,7 +61,7 @@ internal class HackerNewsViewModel(
 
   val feedData: Flow<PagingData<Story>> = feedInteractor.flow.cachedIn(viewModelScope)
 
-  private val pagingDataCollector = PagingDataCollector<Story>()
+  private val pagingDataCollector = PagingDataCollector<Story>(initial = PagingItems.empty())
   val stories: Flow<PagingItems<Story>> = pagingDataCollector.items
 
   val currentStory: StateFlow<Pair<Story, SiteMeta?>?> = itemInteractor.flow

@@ -32,9 +32,12 @@ import kotlinx.coroutines.flow.asStateFlow
  *
  * @see [LazyPagingItems]
  */
-class PagingDataCollector<T : Any>(private val dispatcher: CoroutineContext = Dispatchers.Main) {
+class PagingDataCollector<T : Any>(
+  private val dispatcher: CoroutineContext = Dispatchers.Main,
+  initial: PagingItems<T> = PagingItems.empty(),
+) {
 
-  private val _itemsFlow = MutableStateFlow<PagingItems<T>>(PagingItems.empty())
+  private val _itemsFlow = MutableStateFlow(initial)
 
   val items: Flow<PagingItems<T>> = _itemsFlow.asStateFlow()
 
