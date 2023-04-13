@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.runtime.Composable
@@ -31,10 +33,11 @@ import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
+import dev.kiji.core.components.ImageStory
 import dev.kiji.core.model.Action
 import dev.kiji.data.entities.Story
-import dev.kiji.core.components.ImageStory
 
+// TODO: support more PagingData configurations for UpLabs.
 @ExperimentalFoundationApi
 @Composable
 fun UpLabsFeed(
@@ -43,28 +46,51 @@ fun UpLabsFeed(
   modifier: Modifier = Modifier,
   onAction: suspend (Action<Story>) -> Unit,
 ) {
-  LazyVerticalStaggeredGrid(
-    columns = StaggeredGridCells.Adaptive(minSize = 180.dp),
-    contentPadding = WindowInsets.systemBars
-      .add(WindowInsets(top = 4.dp, left = 4.dp, right = 4.dp))
-      .asPaddingValues(),
-    verticalItemSpacing = 4.dp,
-    horizontalArrangement = Arrangement.spacedBy(4.dp),
-    modifier = modifier,
-  ) {
-    items(data.itemCount) { index ->
-      val story = data[index]
-      ImageStory(
-        story = story,
-        currentTimeMillis = currentTimeMillis,
-        onAction = onAction,
-        modifier = Modifier
-          .fillMaxWidth()
-          .placeholder(
-            visible = story == null,
-            highlight = PlaceholderHighlight.shimmer(),
-          ),
-      )
+  if (data.itemCount == 0) {
+    LazyVerticalGrid(
+      userScrollEnabled = false,
+      columns = GridCells.Adaptive(minSize = 180.dp),
+      contentPadding = WindowInsets.systemBars
+        .add(WindowInsets(top = 4.dp, left = 4.dp, right = 4.dp))
+        .asPaddingValues(),
+      verticalArrangement = Arrangement.spacedBy(4.dp),
+      horizontalArrangement = Arrangement.spacedBy(4.dp),
+      modifier = modifier,
+    ) {
+      items(100) {
+        ImageStory(
+          story = null,
+          currentTimeMillis = currentTimeMillis,
+          onAction = onAction,
+          modifier = Modifier
+            .fillMaxWidth()
+            .placeholder(
+              visible = true,
+              highlight = PlaceholderHighlight.shimmer(),
+            ),
+        )
+      }
+    }
+  } else {
+    LazyVerticalStaggeredGrid(
+      columns = StaggeredGridCells.Adaptive(minSize = 180.dp),
+      contentPadding = WindowInsets.systemBars
+        .add(WindowInsets(top = 4.dp, left = 4.dp, right = 4.dp))
+        .asPaddingValues(),
+      verticalItemSpacing = 4.dp,
+      horizontalArrangement = Arrangement.spacedBy(4.dp),
+      modifier = modifier,
+    ) {
+      items(data.itemCount) { index ->
+        val story = data[index]
+        ImageStory(
+          story = story,
+          currentTimeMillis = currentTimeMillis,
+          onAction = onAction,
+          modifier = Modifier
+            .fillMaxWidth(),
+        )
+      }
     }
   }
 }
