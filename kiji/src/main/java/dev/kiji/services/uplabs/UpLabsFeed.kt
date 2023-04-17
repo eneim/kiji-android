@@ -34,7 +34,6 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import dev.kiji.core.components.ImageStory
-import dev.kiji.core.model.Action
 import dev.kiji.data.entities.Story
 
 // TODO: support more PagingData configurations for UpLabs.
@@ -42,9 +41,8 @@ import dev.kiji.data.entities.Story
 @Composable
 fun UpLabsFeed(
   data: LazyPagingItems<Story>,
-  currentTimeMillis: Long,
   modifier: Modifier = Modifier,
-  onAction: suspend (Action<Story>) -> Unit,
+  onAction: suspend (Story) -> Unit,
 ) {
   if (data.itemCount == 0) {
     LazyVerticalGrid(
@@ -60,7 +58,6 @@ fun UpLabsFeed(
       items(100) {
         ImageStory(
           story = null,
-          currentTimeMillis = currentTimeMillis,
           onAction = onAction,
           modifier = Modifier
             .fillMaxWidth()
@@ -85,10 +82,8 @@ fun UpLabsFeed(
         val story = data[index]
         ImageStory(
           story = story,
-          currentTimeMillis = currentTimeMillis,
           onAction = onAction,
-          modifier = Modifier
-            .fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth(),
         )
       }
     }

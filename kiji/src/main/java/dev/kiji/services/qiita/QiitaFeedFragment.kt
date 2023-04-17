@@ -39,7 +39,7 @@ class QiitaFeedFragment : Fragment(R.layout.fragment_compose_view) {
         data = viewModel.data,
         currentTimeMillis = System.currentTimeMillis(),
         onAction = {
-          requireContext().openCustomTab(Uri.parse(it.data.url), primaryColor)
+          requireContext().openCustomTab(Uri.parse(it.url), primaryColor)
         },
       )
     }

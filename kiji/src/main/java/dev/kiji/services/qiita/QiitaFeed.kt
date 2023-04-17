@@ -23,10 +23,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import dev.kiji.core.components.Story
-import dev.kiji.core.model.Action
+import dev.kiji.core.components.TextStory
+import dev.kiji.core.model.ImageStoryEvent
+import dev.kiji.core.model.StoryEvent
+import dev.kiji.core.model.StoryUiModel
 import dev.kiji.data.entities.Story
 
 @Composable
@@ -34,9 +38,16 @@ fun QiitaFeed(
   data: SnapshotStateList<Story>,
   currentTimeMillis: Long,
   modifier: Modifier = Modifier,
-  onAction: suspend (Action<Story>) -> Unit,
+  onAction: (Story) -> Unit,
 ) {
   val listState = rememberLazyListState()
+  val storyEvent: (StoryEvent) -> Unit = { event ->
+    when (event) {
+      is StoryEvent.Open -> onAction(event.story)
+      is StoryEvent.Share -> {}
+      is ImageStoryEvent -> Unit
+    }
+  }
 
   LazyColumn(
     state = listState,
@@ -46,20 +57,18 @@ fun QiitaFeed(
   ) {
     if (data.isEmpty()) {
       items(100) {
-        Story(
-          story = null,
+        TextStory(
+          model = StoryUiModel(remember { mutableStateOf(null) }, storyEvent),
           currentTimeMillis = currentTimeMillis,
-          onAction = onAction,
         )
 
         Divider()
       }
     } else {
       items(data) { story ->
-        Story(
-          story = story,
+        TextStory(
+          StoryUiModel(remember { mutableStateOf(story) }, storyEvent),
           currentTimeMillis = currentTimeMillis,
-          onAction = onAction,
           showFooter = false,
         )
 

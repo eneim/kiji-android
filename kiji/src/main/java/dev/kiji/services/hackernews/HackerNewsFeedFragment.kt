@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -60,7 +61,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class HackerNewsFeedFragment : Fragment(R.layout.fragment_epoxy_view) {
 
-  private val viewModel: HackerNewsViewModel by HackerNewsViewModel.getInstance(this)
+  private val viewModel: HackerNewsViewModel by viewModels()
   private var lastSeenItemPosition = RecyclerView.NO_POSITION
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

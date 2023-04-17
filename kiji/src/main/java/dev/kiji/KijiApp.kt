@@ -17,6 +17,7 @@ package dev.kiji
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 /**
  * The root Composable of the App.
  */
+@ExperimentalMaterialApi
 @ExperimentalPagerApi
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
@@ -43,8 +45,7 @@ internal fun KijiAppContent(
   navController: NavHostController,
 ) {
   Surface(
-    modifier = Modifier
-      .fillMaxSize(),
+    modifier = Modifier.fillMaxSize(),
     color = MaterialTheme.colors.surface,
   ) {
     HomeContent(

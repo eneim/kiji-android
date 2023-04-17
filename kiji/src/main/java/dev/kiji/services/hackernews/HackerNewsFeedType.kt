@@ -15,38 +15,25 @@
  */
 package dev.kiji.services.hackernews
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+enum class HackerNewsFeedType(val value: String) {
 
-sealed class HackerNewsFeedType(val name: String) : Parcelable {
-
-  @Parcelize
-  object TopStories : HackerNewsFeedType("TopStories")
-
-  @Parcelize
-  object NewStories : HackerNewsFeedType("NewStories")
-
-  @Parcelize
-  object BestStories : HackerNewsFeedType("BestStories")
-
-  @Parcelize
-  object AskStories : HackerNewsFeedType("AskStories")
-
-  @Parcelize
-  object ShowStories : HackerNewsFeedType("ShowStories")
-
-  @Parcelize
-  object JobStories : HackerNewsFeedType("JobStories")
+  TopStories("Top"),
+  NewStories("New"),
+  BestStories("Best"),
+  AskStories("Ask"),
+  ShowStories("Show"),
+  JobStories("Jobs"),
+  ;
 
   companion object {
 
     fun fromName(name: String): HackerNewsFeedType? = when (name) {
-      TopStories.name -> TopStories
-      NewStories.name -> NewStories
-      BestStories.name -> BestStories
-      AskStories.name -> AskStories
-      ShowStories.name -> ShowStories
-      JobStories.name -> JobStories
+      TopStories.value -> TopStories
+      NewStories.value -> NewStories
+      BestStories.value -> BestStories
+      AskStories.value -> AskStories
+      ShowStories.value -> ShowStories
+      JobStories.value -> JobStories
       else -> null
     }
   }

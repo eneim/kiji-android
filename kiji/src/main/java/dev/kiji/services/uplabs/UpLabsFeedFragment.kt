@@ -25,7 +25,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.paging.compose.collectAsLazyPagingItems
 import dev.kiji.R
-import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.utils.openCustomTab
 import dev.kiji.databinding.FragmentComposeViewBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,13 +40,9 @@ class UpLabsFeedFragment : Fragment(R.layout.fragment_compose_view) {
     val binding = FragmentComposeViewBinding.bind(view)
     binding.feed.setContent {
       val primaryColor = MaterialTheme.colors.primary.toArgb()
-      UpLabsFeed(
-        data = viewModel.feedData.collectAsLazyPagingItems(),
-        currentTimeMillis = LocalCurrentMinute.current,
-        onAction = {
-          requireContext().openCustomTab(Uri.parse(it.data.url), primaryColor)
-        },
-      )
+      UpLabsFeed(data = viewModel.feedData.collectAsLazyPagingItems()) {
+        requireContext().openCustomTab(Uri.parse(it.url), primaryColor)
+      }
     }
   }
 }

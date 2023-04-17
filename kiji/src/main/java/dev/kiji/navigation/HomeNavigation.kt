@@ -23,9 +23,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -43,7 +44,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.compose.rememberFlowWithLifecycle
-import dev.kiji.core.model.Action
 import dev.kiji.core.utils.openCustomTab
 import dev.kiji.data.entities.Story
 import dev.kiji.services.hackernews.HackerNewsFeed
@@ -55,6 +55,7 @@ import dev.kiji.services.uplabs.UpLabsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @ExperimentalPagerApi
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
@@ -68,8 +69,8 @@ internal fun HomeContent(
 ) {
   val context = LocalContext.current as Activity
   val primaryColor = MaterialTheme.colors.primary.toArgb()
-  val onClickStory: (Action<Story>) -> Unit = remember {
-    { context.openCustomTab(Uri.parse(it.data.url), primaryColor) }
+  val onClickStory: (Story) -> Unit = remember {
+    { context.openCustomTab(Uri.parse(it.url), primaryColor) }
   }
 
   val feedBuilders: List<@Composable () -> Unit> = remember {
@@ -91,7 +92,6 @@ internal fun HomeContent(
       {
         UpLabsFeed(
           data = remember { upLabsViewModel.feedData }.collectAsLazyPagingItems(),
-          currentTimeMillis = LocalCurrentMinute.current,
           onAction = onClickStory,
         )
       },
@@ -102,7 +102,7 @@ internal fun HomeContent(
   val coroutineScope = rememberCoroutineScope()
 
   Column(modifier = modifier) {
-    TabRow(
+    ScrollableTabRow(
       selectedTabIndex = pagerState.currentPage,
       indicator = { tabPositions ->
         TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
@@ -146,7 +146,7 @@ private fun NavGraphBuilder.withHackerNewsFeed(
         data = viewModel.feedData.collectAsLazyPagingItems(),
         currentTimeMillis = LocalCurrentMinute.current,
       ) {
-        context.openCustomTab(Uri.parse(it.data.url), primaryColor)
+        context.openCustomTab(Uri.parse(it.url), primaryColor)
       }
     }
   },
@@ -165,7 +165,7 @@ private fun NavGraphBuilder.withQiitaFeed(
         data = remember { viewModel.data },
         currentTimeMillis = LocalCurrentMinute.current,
         onAction = {
-          context.openCustomTab(Uri.parse(it.data.url), primaryColor)
+          context.openCustomTab(Uri.parse(it.url), primaryColor)
         },
       )
     }
@@ -186,11 +186,9 @@ private fun NavGraphBuilder.withUpLabsFeed(
       UpLabsFeed(
         data = rememberFlowWithLifecycle(flow = viewModel.feedData)
           .collectAsLazyPagingItems(),
-        currentTimeMillis = LocalCurrentMinute.current,
-        onAction = {
-          context.openCustomTab(Uri.parse(it.data.url), primaryColor)
-        },
-      )
+      ) {
+        context.openCustomTab(Uri.parse(it.url), primaryColor)
+      }
     }
   },
 )

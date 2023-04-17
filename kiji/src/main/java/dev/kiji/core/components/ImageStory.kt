@@ -23,17 +23,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
-import dev.kiji.core.model.Action
+import coil.request.ImageRequest
 import dev.kiji.data.entities.Story
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun ImageStory(
   story: Story?,
-  currentTimeMillis: Long,
-  onAction: suspend (Action<Story>) -> Unit,
+  onAction: suspend (Story) -> Unit,
   modifier: Modifier = Modifier,
   aspectRatio: Float? = null,
 ) {
@@ -45,14 +44,17 @@ fun ImageStory(
       .aspectRatio(ratio)
       .clickable {
         if (story != null) {
-          coroutineScope.launch(Dispatchers.Main.immediate) {
-            onAction(Action.ReadNow(story))
+          coroutineScope.launch {
+            onAction(story)
           }
         }
       },
   ) {
     AsyncImage(
-      model = image?.url,
+      model = ImageRequest.Builder(LocalContext.current)
+        .data(image?.url)
+        .crossfade(true)
+        .build(),
       contentDescription = story?.title,
       modifier = modifier.fillMaxSize(),
       contentScale = ContentScale.Crop,

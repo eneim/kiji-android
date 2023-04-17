@@ -21,11 +21,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.kiji.core.compose.LocalCurrentMinute
@@ -39,10 +42,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
   ExperimentalCoroutinesApi::class,
   ExperimentalFoundationApi::class,
   ExperimentalPagerApi::class,
+  ExperimentalMaterialApi::class,
 )
 class MainActivity : FragmentActivity() {
-
-  private val hackerNewsViewModel by HackerNewsViewModel.getInstance(this)
 
   private val clockBroadcastReceiver = ClockBroadcastReceiver()
 
@@ -66,7 +68,7 @@ class MainActivity : FragmentActivity() {
       ) {
         KijiAppTheme {
           /* KijiAppContent(
-            hackerNewsViewModel = hackerNewsViewModel,
+            hackerNewsViewModel = viewModel(),
             qiitaFeedViewModel = viewModel(),
             upLabsViewModel = viewModel(),
             navController = rememberNavController(),

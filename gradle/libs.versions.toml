@@ -3,7 +3,7 @@ constraintlayoutCompose = "1.1.0-alpha09"
 desugar_jdk_libs = "2.0.3"
 kotlin = "1.8.10"
 kotlinx-coroutines = "1.6.4"
-android-plugin = "8.0.0-rc01"
+android-plugin = "8.0.0"
 ksp = "1.8.10-1.0.9"
 
 spotless = "6.15.0"

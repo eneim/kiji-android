@@ -21,11 +21,16 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
-import dev.kiji.core.components.Story
+import dev.kiji.core.components.TextStory
 import dev.kiji.core.model.Action
+import dev.kiji.core.model.ImageStoryEvent
+import dev.kiji.core.model.StoryEvent
+import dev.kiji.core.model.StoryUiModel
 import dev.kiji.data.entities.Story
 
 @Composable
@@ -33,29 +38,34 @@ fun HackerNewsFeed(
   data: LazyPagingItems<Story>,
   currentTimeMillis: Long,
   modifier: Modifier = Modifier,
-  onAction: suspend (Action<Story>) -> Unit,
+  onAction: (Story) -> Unit,
 ) {
   LazyColumn(
     userScrollEnabled = data.itemCount > 0,
     modifier = modifier,
     contentPadding = WindowInsets.systemBars.asPaddingValues(),
   ) {
+    val storyEvent: (StoryEvent) -> Unit = { event ->
+      when (event) {
+        is StoryEvent.Open -> onAction(event.story)
+        is StoryEvent.Share -> {}
+        is ImageStoryEvent -> Unit
+      }
+    }
     if (data.itemCount == 0) {
       items(100) {
-        Story(
-          story = null,
+        TextStory(
+          model = StoryUiModel(remember { mutableStateOf(null) }, storyEvent),
           currentTimeMillis = currentTimeMillis,
-          onAction = onAction,
         )
 
         Divider()
       }
     } else {
       items(data) { item: Story? ->
-        Story(
-          story = item,
+        TextStory(
+          model = StoryUiModel(remember { mutableStateOf(item) }, storyEvent),
           currentTimeMillis = currentTimeMillis,
-          onAction = onAction,
         )
 
         Divider()

@@ -15,19 +15,12 @@
  */
 package dev.kiji.services.hackernews
 
-import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import dev.kiji.core.domain.ItemDetailsInteractor
-import dev.kiji.core.domain.PagingDataInteractor
 import dev.kiji.core.utils.PagingDataCollector
 import dev.kiji.core.utils.PagingItems
 import dev.kiji.data.HackerNewsModule
@@ -39,19 +32,28 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 internal class HackerNewsViewModel(
   private val stateHandle: SavedStateHandle,
-  private val feedInteractor: PagingDataInteractor<HackerNewsFeedPagingInteractor.Params, Story>,
-  private val itemInteractor: ItemDetailsInteractor<Long?, Pair<Story, SiteMeta?>?>,
 ) : ViewModel() {
+
+  private val hackerNewsApi = HackerNewsModule.provideHackerNewsApi()
+  private val metaTagsApi = CommonDataModule.provideMetaTagsApi()
+  private val storyFetcher = provideHackerNewsStoryFetcher(hackerNewsApi)
+
+  private val feedInteractor = HackerNewsFeedPagingInteractor(
+    api = hackerNewsApi,
+    fetcher = storyFetcher,
+  )
+  private val itemInteractor = HackerNewsItemDetailsInteractor(
+    api = metaTagsApi,
+    storyFetcher = storyFetcher,
+  )
 
   private val feedType: StateFlow<HackerNewsFeedType> = stateHandle
     .getStateFlow(KEY_FEED_TYPE, HackerNewsFeedType.TopStories)
@@ -75,14 +77,11 @@ internal class HackerNewsViewModel(
     viewModelScope.launch(Dispatchers.IO) {
       feedType
         .mapLatest { HackerNewsFeedPagingInteractor.Params(PAGING_CONFIG, it) }
-        .onEach { params -> feedInteractor(params) }
-        .collect()
+        .collectLatest { params -> feedInteractor(params) }
     }
 
     viewModelScope.launch(Dispatchers.IO) {
-      storyId
-        .onEach { id -> itemInteractor(id?.toLong()) }
-        .collect()
+      storyId.collectLatest { id -> itemInteractor(id?.toLong()) }
     }
 
     viewModelScope.launch(Dispatchers.IO) {
@@ -106,63 +105,5 @@ internal class HackerNewsViewModel(
     private val PAGING_CONFIG = PagingConfig(
       pageSize = 20,
     )
-
-    fun getInstance(
-      activity: ComponentActivity,
-    ): Lazy<HackerNewsViewModel> = activity.viewModels {
-      object : AbstractSavedStateViewModelFactory() {
-        override fun <T : ViewModel> create(
-          key: String,
-          modelClass: Class<T>,
-          handle: SavedStateHandle,
-        ): T {
-          val hackerNewsApi = HackerNewsModule.provideHackerNewsApi()
-          val metaTagsApi = CommonDataModule.provideMetaTagsApi()
-          val storyFetcher = provideHackerNewsStoryFetcher(hackerNewsApi)
-
-          @Suppress("UNCHECKED_CAST")
-          return HackerNewsViewModel(
-            stateHandle = handle,
-            feedInteractor = HackerNewsFeedPagingInteractor(
-              api = hackerNewsApi,
-              fetcher = storyFetcher,
-            ),
-            itemInteractor = HackerNewsItemDetailsInteractor(
-              api = metaTagsApi,
-              storyFetcher = storyFetcher,
-            ),
-          ) as T
-        }
-      }
-    }
-
-    fun getInstance(
-      fragment: Fragment,
-    ): Lazy<HackerNewsViewModel> = fragment.viewModels {
-      object : AbstractSavedStateViewModelFactory() {
-        override fun <T : ViewModel> create(
-          key: String,
-          modelClass: Class<T>,
-          handle: SavedStateHandle,
-        ): T {
-          val hackerNewsApi = HackerNewsModule.provideHackerNewsApi()
-          val metaTagsApi = CommonDataModule.provideMetaTagsApi()
-          val storyFetcher = provideHackerNewsStoryFetcher(hackerNewsApi)
-
-          @Suppress("UNCHECKED_CAST")
-          return HackerNewsViewModel(
-            stateHandle = handle,
-            feedInteractor = HackerNewsFeedPagingInteractor(
-              api = hackerNewsApi,
-              fetcher = storyFetcher,
-            ),
-            itemInteractor = HackerNewsItemDetailsInteractor(
-              api = metaTagsApi,
-              storyFetcher = storyFetcher,
-            ),
-          ) as T
-        }
-      }
-    }
   }
 }
