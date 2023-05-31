@@ -32,6 +32,8 @@ internal object KotlinxHackerNewsApi : HackerNewsApi {
   private val client = HttpClient(OkHttp) {
     install(ContentNegotiation) {
       json()
+      // jackson()
+      // gson()
     }
     install(HttpTimeout) {
       requestTimeoutMillis = Duration.ofSeconds(15).toMillis()

@@ -35,6 +35,7 @@ rootProject.name = "Kiji"
 include(":kiji")
 includeFolder("core")
 includeFolder("data")
+includeFolder("libraries")
 
 fun includeFolder(folderName: String) {
     file(path = "$rootDir/$folderName").listFiles()

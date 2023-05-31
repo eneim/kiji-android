@@ -45,7 +45,7 @@ dependencies {
   implementation(project(":data:qiita-interface"))
 
   //region Square OSS
-  implementation(libs.retrofit)
+  implementation(libs.retrofit.core)
   implementation(libs.retrofit.converter.moshi)
 
   implementation(libs.moshi.core)

@@ -76,6 +76,7 @@ android {
 
 dependencies {
   implementation(project(":core:network"))
+  // implementation(project(":libraries:json"))
 
   implementation(project(":data:uplabs-interface"))
   implementation(project(":data:uplabs-impl"))
@@ -100,9 +101,11 @@ dependencies {
   implementation(libs.androidx.constraintlayout.compose)
   implementation(libs.androidx.room.paging)
 
-  implementation("androidx.webkit:webkit:1.6.1")
-  implementation("androidx.browser:browser:1.5.0")
-  implementation("androidx.work:work-runtime-ktx:2.8.1")
+  implementation(libs.androidx.window)
+
+  implementation(libs.androidx.webkit)
+  implementation(libs.androidx.browser)
+  implementation(libs.androidx.work.runtime.ktx)
 
   //region Jetpack Compose UI
   implementation(platform(libs.compose.bom))
@@ -122,19 +125,18 @@ dependencies {
   implementation(libs.accompanist.pager.indicators)
   //endregion
 
-  def epoxy_version = "5.1.2"
-  implementation("com.airbnb.android:epoxy:$epoxy_version")
-  implementation("com.airbnb.android:epoxy-paging3:$epoxy_version")
-  implementation("com.airbnb.android:epoxy-compose:$epoxy_version")
+  implementation(libs.android.epoxy.core)
+  implementation(libs.android.epoxy.paging3)
+  implementation(libs.android.epoxy.compose)
   // Add the annotation processor if you are using Epoxy's annotations (recommended)
-  ksp("com.airbnb.android:epoxy-processor:$epoxy_version")
+  ksp(libs.android.epoxy.processor)
 
-  implementation(libs.coil)
+  implementation(libs.coil.core)
   implementation(libs.coil.svg)
   implementation(libs.coil.compose)
 
   //region Square OSS
-  implementation(libs.retrofit)
+  implementation(libs.retrofit.core)
   implementation(libs.retrofit.converter.moshi)
 
   implementation(libs.moshi.core)

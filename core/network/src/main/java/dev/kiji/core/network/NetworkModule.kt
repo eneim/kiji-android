@@ -53,7 +53,7 @@ object NetworkModule {
   }
 
   fun provideRetrofitBuilder(
-    moshi: Moshi.Builder,
+    moshi: Moshi.Builder = provideMoshi().newBuilder(),
   ): Retrofit.Builder = Retrofit.Builder()
     .callFactory(client::newCall)
     .addConverterFactory(MoshiConverterFactory.create(moshi.build()))

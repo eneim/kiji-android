@@ -19,31 +19,18 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.kiji.core.compose.LocalCurrentMinute
 import dev.kiji.core.utils.ClockBroadcastReceiver
 import dev.kiji.databinding.ActivityHomeBinding
-import dev.kiji.services.hackernews.HackerNewsViewModel
 import dev.kiji.ui.theme.KijiAppTheme
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@OptIn(
-  ExperimentalCoroutinesApi::class,
-  ExperimentalFoundationApi::class,
-  ExperimentalPagerApi::class,
-  ExperimentalMaterialApi::class,
-)
 class MainActivity : FragmentActivity() {
 
   private val clockBroadcastReceiver = ClockBroadcastReceiver()

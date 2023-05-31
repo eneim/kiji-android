@@ -98,7 +98,12 @@ internal fun HomeContent(
     )
   }
 
-  val pagerState: PagerState = rememberPagerState()
+  val pagerState: PagerState = rememberPagerState(
+    initialPage = 0,
+    initialPageOffsetFraction = 0f,
+  ) {
+    Route.size
+  }
   val coroutineScope = rememberCoroutineScope()
 
   Column(modifier = modifier) {
@@ -123,7 +128,6 @@ internal fun HomeContent(
     }
 
     HorizontalPager(
-      pageCount = Route.size,
       state = pagerState,
       modifier = Modifier.weight(1f),
     ) { page ->

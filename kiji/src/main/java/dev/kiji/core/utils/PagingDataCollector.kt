@@ -87,7 +87,7 @@ class PagingDataCollector<T : Any>(
 
   private inner class Snapshot(private val data: ItemSnapshotList<T>) : PagingItems<T> {
     override val size: Int get() = data.size
-    override fun peek(index: Int): T? = data[index]
+    override fun peek(index: Int): T? = if (size > index) data[index] else null
     override fun get(index: Int): T? {
       pagingDataDiffer[index]
       return data[index]
