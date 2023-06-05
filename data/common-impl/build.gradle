@@ -1,41 +1,42 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.ksp)
 }
 
 android {
-    namespace("dev.kiji.data.common")
+  namespace("dev.kiji.data.common")
 
-    defaultConfig {
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
+  defaultConfig {
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles "consumer-rules.pro"
+  }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
+  }
 }
 
 dependencies {
-    implementation(project(":core:network"))
-    implementation(project(":data:common-interface"))
+  implementation(project(":core:network"))
+  implementation(project(":data:common-interface"))
+  // implementation(project(":libraries:json"))
 
-    //region Square OSS
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.converter.moshi)
+  //region Square OSS
+  implementation(libs.retrofit.core)
+  implementation(libs.retrofit.converter.moshi)
 
-    implementation(libs.moshi.core)
-    implementation(libs.moshi.adapters)
-    ksp(libs.moshi.codegen)
+  implementation(libs.moshi.core)
+  implementation(libs.moshi.adapters)
+  ksp(libs.moshi.codegen)
 
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.logging.interceptor)
-    //endregion
+  implementation(platform(libs.okhttp.bom))
+  implementation(libs.okhttp.core)
+  implementation(libs.okhttp.logging.interceptor)
+  //endregion
 
-    testImplementation(libs.test.junit.core)
+  testImplementation(libs.test.junit.core)
 }
