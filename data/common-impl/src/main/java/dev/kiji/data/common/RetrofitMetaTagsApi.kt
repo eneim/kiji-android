@@ -23,7 +23,7 @@ import retrofit2.http.Query
 @BaseUrl("https://metatags.io")
 internal interface RetrofitMetaTagsApi : MetaTagsApi {
 
-  @Headers("referer: https://metatags.io/")
+  @Headers(value = ["referer: https://metatags.io/", "authority: https://metatags.io/"])
   @GET("/api/metadata")
   override suspend fun getMetaTags(@Query("domain") url: String): MoshiMetaTags?
 }

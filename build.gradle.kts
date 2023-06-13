@@ -61,6 +61,19 @@ allprojects {
       freeCompilerArgs.plus(arrayOf("-opt-in=kotlin.RequiresOptIn"))
     }
   }
+
+  apply(plugin = "com.diffplug.spotless")
+  spotless {
+    kotlin {
+      target("src/**/*.kt")
+      licenseHeaderFile(rootProject.file("config/spotless/license_header.txt"))
+    }
+  }
+
+  apply(plugin = "org.jmailen.kotlinter")
+  kotlinter {
+    disabledRules = arrayOf("filename")
+  }
 }
 
 subprojects {
@@ -84,18 +97,5 @@ subprojects {
           )
       }
     }
-  }
-
-  apply(plugin = "com.diffplug.spotless")
-  spotless {
-    kotlin {
-      target("src/**/*.kt")
-      licenseHeaderFile(rootProject.file("config/spotless/license_header.txt"))
-    }
-  }
-
-  apply(plugin = "org.jmailen.kotlinter")
-  kotlinter {
-    disabledRules = arrayOf("filename")
   }
 }
