@@ -25,9 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.items
 import dev.kiji.core.components.TextStory
-import dev.kiji.core.model.Action
 import dev.kiji.core.model.ImageStoryEvent
 import dev.kiji.core.model.StoryEvent
 import dev.kiji.core.model.StoryUiModel
@@ -62,7 +60,8 @@ fun HackerNewsFeed(
         Divider()
       }
     } else {
-      items(data) { item: Story? ->
+      items(data.itemCount) { index: Int ->
+        val item = data[index]
         TextStory(
           model = StoryUiModel(remember { mutableStateOf(item) }, storyEvent),
           currentTimeMillis = currentTimeMillis,

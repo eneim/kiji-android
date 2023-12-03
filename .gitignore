@@ -24,3 +24,8 @@ local.properties
 /.idea/git_toolbox_prj.xml
 /.idea/inspectionProfiles/Project_Default.xml
 /*/*/build/
+/.idea/migrations.xml
+
+/.idea
+!/.idea/copyright
+!/.idea/.name

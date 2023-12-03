@@ -77,7 +77,7 @@ allprojects {
 }
 
 subprojects {
-  val metricsFolder = project.buildDir.absolutePath + "/compose-metrics"
+  val metricsFolder = project.layout.buildDirectory.dir("compose-metrics")
   val compilerPluginPrefix = "androidx.compose.compiler.plugins.kotlin"
   tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {

@@ -61,6 +61,7 @@ android {
   buildFeatures {
     viewBinding true
     compose true
+    buildConfig true
   }
 
   composeOptions {
@@ -148,7 +149,7 @@ dependencies {
   implementation(libs.okhttp.logging.interceptor)
   //endregion
 
-  implementation("io.github.aakira:napier:2.6.1")
+  implementation(libs.napier)
 
   testImplementation(libs.test.junit.core)
   androidTestImplementation(libs.test.androidx.junit)
