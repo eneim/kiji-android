@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import kotlin.enums.EnumEntries
 
 enum class Route(val value: String, val title: String) {
   HackerNews("hackernews", "news.ycombinator.com"), // Kotlinx Serialization
@@ -28,7 +29,7 @@ enum class Route(val value: String, val title: String) {
   ;
 
   companion object {
-    val items = values()
+    val items: EnumEntries<Route> = entries
     val size: Int get() = items.size
     operator fun get(index: Int): Route = items[index]
   }
