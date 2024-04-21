@@ -127,7 +127,7 @@ fun TextStory(
         modifier = Modifier
           .placeholder(
             visible = story == null,
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.15f),
             highlight = PlaceholderHighlight.shimmer(),
           ),
       )
@@ -140,7 +140,7 @@ fun TextStory(
             .wrapContentHeight()
             .placeholder(
                 visible = story == null,
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.15f),
                 highlight = PlaceholderHighlight.shimmer(),
             ),
       )
@@ -181,7 +181,7 @@ fun TextStory(
                 .wrapContentHeight()
                 .placeholder(
                     visible = story == null,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.15f),
                     highlight = PlaceholderHighlight.shimmer(),
                 ),
           )

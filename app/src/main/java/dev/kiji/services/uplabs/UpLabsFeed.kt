@@ -61,7 +61,7 @@ fun UpLabsFeed(
               .placeholder(
                   visible = true,
                   shape = RectangleShape,
-                  color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f),
+                  color = MaterialTheme.colors.onSurface.copy(alpha = 0.15f),
                   highlight = PlaceholderHighlight.shimmer(),
               ),
         )
