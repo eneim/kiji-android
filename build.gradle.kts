@@ -15,7 +15,6 @@
  */
 
 // https://youtrack.jetbrains.com/issue/KTIJ-19369/False-positive-cant-be-called-in-this-context-by-implicit-receiver-with-plugins-in-Gradle-version-catalogs-as-a-TOML-file#focus=Comments-27-6204464.0-0
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
   alias(libs.plugins.kotlin.android) apply false
   alias(libs.plugins.android.application) apply false
@@ -44,20 +43,20 @@ allprojects {
 
       compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
       }
     }
   }
 
   tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
+    sourceCompatibility = JavaVersion.VERSION_17.toString()
+    targetCompatibility = JavaVersion.VERSION_17.toString()
   }
 
   tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
     kotlinOptions {
-      jvmTarget = "11"
+      jvmTarget = "17"
       freeCompilerArgs.plus(arrayOf("-opt-in=kotlin.RequiresOptIn"))
     }
   }
@@ -66,7 +65,7 @@ allprojects {
   spotless {
     kotlin {
       target("src/**/*.kt")
-      licenseHeaderFile(rootProject.file("config/spotless/license_header.txt"))
+      licenseHeaderFile(rootProject.file("gradle/config/spotless/license_header.txt"))
     }
   }
 

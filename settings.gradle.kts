@@ -15,36 +15,35 @@
  */
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
 }
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    google()
+    mavenCentral()
+  }
 }
 
 rootProject.name = "Kiji"
-include(":kiji")
+include(":app")
 includeFolder("core")
 includeFolder("data")
-includeFolder("libraries")
 
 fun includeFolder(folderName: String) {
-    file(path = "$rootDir/$folderName").listFiles()
-        ?.takeIf(Array<File>::isNotEmpty)
-        ?.forEach { module: File ->
-            val buildFile = "$module/build.gradle"
-            val ktsBuildFile = "$module/build.gradle.kts"
-            if (file(buildFile).exists() || file(ktsBuildFile).exists()) {
-                include("${folderName}:${module.name}")
-            }
-        }
+  file(path = "$rootDir/$folderName").listFiles()
+    ?.takeIf(Array<File>::isNotEmpty)
+    ?.forEach { module: File ->
+      val buildFile = "$module/build.gradle"
+      val ktsBuildFile = "$module/build.gradle.kts"
+      if (file(buildFile).exists() || file(ktsBuildFile).exists()) {
+        include("${folderName}:${module.name}")
+      }
+    }
 }
